@@ -1,0 +1,62 @@
+{
+  "$schema": "https://xeyy.tools/schema/registry-item.schema.json",
+  "name": "button",
+  "type": "component",
+  "version": "0.0.1",
+  "title": "Button",
+  "description": "A themeable button built on Base UI and StyleX. Six variants, four sizes, loading and disabled states, full-width layout, and full ARIA passthrough.",
+  "category": "actions",
+  "files": [
+    { "path": "button.tsx", "type": "source" },
+    { "path": "button.types.ts", "type": "source" },
+    { "path": "index.ts", "type": "source" },
+    { "path": "button.example.tsx", "type": "example" }
+  ],
+  "dependencies": {
+    "@base-ui/react": "latest",
+    "@stylexjs/stylex": "^0.19.0",
+    "@xeyy/tokens": "0.0.1"
+  },
+  "registryDependencies": [],
+  "stylex": {
+    "minVersion": "0.19.0",
+    "features": ["create", "keyframes"],
+    "compiler": true,
+    "conditions": ["hover", "focus-visible", "media"]
+  },
+  "tokens": {
+    "required": [
+      "semantic.primary",
+      "semantic.primaryForeground",
+      "semantic.destructive",
+      "semantic.destructiveForeground",
+      "semantic.surface",
+      "semantic.foreground",
+      "semantic.border",
+      "semantic.focusRing",
+      "radii.sm",
+      "radii.md",
+      "radii.lg",
+      "radii.full",
+      "spacing.2",
+      "spacing.3",
+      "spacing.4",
+      "spacing.6"
+    ]
+  },
+  "theme": {
+    "supportsDark": true
+  },
+  "accessibility": {
+    "keyboard": true,
+    "aria": true,
+    "tested": true
+  },
+  "license": {
+    "type": "MIT"
+  },
+  "documentation": {
+    "stories": "../../apps/playground/src/stories/button.stories.tsx",
+    "example": "./button.example.tsx"
+  }
+}

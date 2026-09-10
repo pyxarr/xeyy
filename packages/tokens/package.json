@@ -1,0 +1,17 @@
+{
+  "name": "@xeyy/tokens",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./src/tokens.stylex.ts",
+  "exports": {
+    "./": "./src/tokens.stylex.ts",
+    "./tokens.stylex": "./src/tokens.stylex.ts"
+  },
+  "dependencies": {
+    "@stylexjs/stylex": "^0.19.0"
+  },
+  "devDependencies": {
+    "@stylexjs/unplugin": "^0.19.0",
+    "@xeyy/typescript-config": "workspace:*"
+  }
+}

@@ -1,0 +1,204 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://xeyy.tools/schema/registry-item.schema.json",
+  "title": "Xeyy Registry Item",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "component",
+        "primitive",
+        "hook",
+        "token",
+        "theme",
+        "block",
+        "template",
+        "utility",
+        "config",
+        "rule",
+        "convention"
+      ]
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "files": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "source",
+              "test",
+              "example",
+              "documentation",
+              "config",
+              "style",
+              "token",
+              "agent"
+            ]
+          },
+          "target": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "path",
+          "type"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "dependencies": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "optionalDependencies": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "registryDependencies": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "stylex": {
+      "type": "object",
+      "properties": {
+        "minVersion": {
+          "type": "string"
+        },
+        "features": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "compiler": {
+          "type": "boolean"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "tokens": {
+      "type": "object",
+      "properties": {
+        "required": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "optional": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "theme": {
+      "type": "object",
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "supportsDark": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "accessibility": {
+      "type": "object",
+      "properties": {
+        "keyboard": {
+          "type": "boolean"
+        },
+        "focusManagement": {
+          "type": "boolean"
+        },
+        "aria": {
+          "type": "boolean"
+        },
+        "tested": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "license": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "copyright": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "documentation": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "name",
+    "type",
+    "version",
+    "files"
+  ],
+  "additionalProperties": false
+}

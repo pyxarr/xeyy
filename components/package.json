@@ -1,0 +1,20 @@
+{
+    "name": "@xeyy/components",
+    "version": "0.0.1",
+    "private": true,
+    "main": "./button/index.ts",
+    "exports": {
+        ".": "./button/index.ts",
+        "./button": "./button/index.ts"
+    },
+    "dependencies": {
+        "@base-ui/react": "latest",
+        "@stylexjs/stylex": "^0.19.0",
+        "@xeyy/tokens": "workspace:*"
+    },
+    "devDependencies": {
+        "@xeyy/typescript-config": "workspace:*",
+        "@types/react": "latest",
+        "react": "latest"
+    }
+}

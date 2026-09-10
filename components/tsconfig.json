@@ -1,0 +1,11 @@
+{
+  "extends": "@xeyy/typescript-config/react-library.json",
+  "compilerOptions": {
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
+    "paths": {
+      "*": ["./*"]
+    }
+  },
+  "include": ["**/*.tsx", "**/*.ts"]
+}
