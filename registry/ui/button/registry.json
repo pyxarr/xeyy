@@ -1,0 +1,47 @@
+{
+  "$schema": "https://xeyy.dev/schema/registry-item.json",
+  "name": "button",
+  "type": "registry:ui",
+  "version": "0.0.1",
+  "title": "Button",
+  "description": "A themeable Button component built on Base UI and StyleX.",
+  "categories": [
+    "form",
+    "interactive",
+    "accessible"
+  ],
+  "source": "../../../packages/components/src/ui/button",
+  "files": [
+    {
+      "path": "button.example.tsx",
+      "type": "example"
+    },
+    {
+      "path": "button.tsx",
+      "type": "registry:ui"
+    }
+  ],
+  "dependencies": [
+    "@base-ui/react",
+    "@stylexjs/stylex"
+  ],
+  "fingerprint": {
+    "button.tsx": "816ab61d4629d0de55c5b07a33090713c24e30c904b9916a9f0c37632cc60a0a"
+  },
+  "stylex": {
+    "features": [
+      "create",
+      "keyframes"
+    ],
+    "compiler": true,
+    "conditions": [
+      "focus-visible",
+      "hover"
+    ]
+  },
+  "accessibility": {
+    "keyboard": true,
+    "focusManagement": true,
+    "aria": true
+  }
+}

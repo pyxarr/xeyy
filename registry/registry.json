@@ -1,0 +1,9 @@
+{
+  "$schema": "https://xeyy.dev/schema/registry.json",
+  "name": "Xeyy Registry",
+  "version": "0.0.1",
+  "items": [
+    "./themes/default/registry.json",
+    "./ui/button/registry.json"
+  ]
+}

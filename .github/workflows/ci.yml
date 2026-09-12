@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.25.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate Xeyy configuration
+        run: pnpm validate:config
+
+      - name: Validate registry definitions
+        run: pnpm validate:registry
+
+      - name: Typecheck all packages
+        run: pnpm check-types
+
+      - name: Run tests
+        run: pnpm test
+
+      - name: Build registry
+        run: pnpm build:registry
+
+      - name: Validate generated registry distribution
+        run: pnpm validate:dist
+
+      - name: Verify build did not modify tracked sources
+        run: |
+          if ! git diff --quiet; then
+            echo "::error::Registry build unexpectedly modified tracked files:"
+            git diff --stat
+            exit 1
+          fi
+          untracked=$(git status --porcelain --untracked-files=all | grep '^??' || true)
+          if [ -n "$untracked" ]; then
+            echo "::error::Registry build left unexpected untracked files:"
+            echo "$untracked"
+            exit 1
+          fi

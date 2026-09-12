@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://xeyy.tools/schema/registry-item.schema.json",
+  "$id": "https://xeyy.dev/schema/registry-item.json",
   "title": "Xeyy Registry Item",
   "type": "object",
   "properties": {
@@ -14,17 +14,11 @@
     "type": {
       "type": "string",
       "enum": [
-        "component",
-        "primitive",
-        "hook",
-        "token",
-        "theme",
-        "block",
-        "template",
-        "utility",
-        "config",
-        "rule",
-        "convention"
+        "registry:ui",
+        "registry:component",
+        "registry:block",
+        "registry:theme",
+        "registry:internal"
       ]
     },
     "version": {
@@ -37,8 +31,39 @@
     "description": {
       "type": "string"
     },
-    "category": {
+    "author": {
       "type": "string"
+    },
+    "homepage": {
+      "type": "string",
+      "format": "uri"
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "docs": {
+      "type": "string",
+      "format": "uri"
+    },
+    "license": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "copyright": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1
     },
     "files": {
       "minItems": 1,
@@ -53,19 +78,21 @@
           "type": {
             "type": "string",
             "enum": [
-              "source",
-              "test",
+              "registry:ui",
+              "registry:component",
+              "registry:block",
+              "registry:theme",
+              "registry:internal",
               "example",
-              "documentation",
-              "config",
-              "style",
-              "token",
-              "agent"
+              "documentation"
             ]
           },
           "target": {
             "type": "string",
             "minLength": 1
+          },
+          "content": {
+            "type": "string"
           }
         },
         "required": [
@@ -76,21 +103,10 @@
       }
     },
     "dependencies": {
-      "type": "object",
-      "propertyNames": {
-        "type": "string"
-      },
-      "additionalProperties": {
-        "type": "string"
-      }
-    },
-    "optionalDependencies": {
-      "type": "object",
-      "propertyNames": {
-        "type": "string"
-      },
-      "additionalProperties": {
-        "type": "string"
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
       }
     },
     "registryDependencies": {
@@ -98,6 +114,15 @@
       "items": {
         "type": "string",
         "minLength": 1
+      }
+    },
+    "fingerprint": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "string"
       }
     },
     "stylex": {
@@ -124,36 +149,6 @@
       },
       "additionalProperties": false
     },
-    "tokens": {
-      "type": "object",
-      "properties": {
-        "required": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "optional": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      },
-      "additionalProperties": false
-    },
-    "theme": {
-      "type": "object",
-      "properties": {
-        "required": {
-          "type": "boolean"
-        },
-        "supportsDark": {
-          "type": "boolean"
-        }
-      },
-      "additionalProperties": false
-    },
     "accessibility": {
       "type": "object",
       "properties": {
@@ -171,33 +166,13 @@
         }
       },
       "additionalProperties": false
-    },
-    "license": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string"
-        },
-        "copyright": {
-          "type": "string"
-        }
-      },
-      "additionalProperties": false
-    },
-    "documentation": {
-      "type": "object",
-      "propertyNames": {
-        "type": "string"
-      },
-      "additionalProperties": {
-        "type": "string"
-      }
     }
   },
   "required": [
     "name",
     "type",
     "version",
+    "source",
     "files"
   ],
   "additionalProperties": false

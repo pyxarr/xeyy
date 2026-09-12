@@ -1,8 +1,34 @@
 import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
 import { Button as BaseButton } from '@base-ui/react/button';
-import { semantic, radii, spacing } from '@xeyy/tokens/tokens.stylex';
-import type { ButtonProps } from './button.types';
+import { semantic, radii, spacing } from '@xeyy/tokens/theme.stylex';
+
+type ButtonVariant = 'primary' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link';
+type ButtonSize = 'sm' | 'md' | 'lg' | 'icon';
+
+interface ButtonProps {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  loading?: boolean;
+  fullWidth?: boolean;
+  children?: React.ReactNode;
+  disabled?: boolean;
+  type?: 'button' | 'submit' | 'reset';
+  focusableWhenDisabled?: boolean;
+  nativeButton?: boolean;
+  as?: React.ReactElement;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  onKeyDown?: React.KeyboardEventHandler<HTMLButtonElement>;
+  id?: string;
+  name?: string;
+  form?: string;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
+  'aria-expanded'?: boolean | 'true' | 'false';
+  'aria-pressed'?: boolean | 'true' | 'false' | 'mixed';
+  'aria-haspopup'?: boolean | 'true' | 'false' | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
+}
 
 const spin = stylex.keyframes({
     from: { transform: 'rotate(0deg)' },

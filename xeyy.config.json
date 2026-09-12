@@ -1,0 +1,11 @@
+{
+  "components": { "path": "packages/components/src/ui" },
+  "theme": { "path": "packages/tokens/src/themes/default/theme.stylex.ts" },
+  "aliases": { "components": "@/components" },
+  "registry": {
+    "path": "registry",
+    "source": "packages/components/src",
+    "themes": "packages/tokens/src",
+    "dist": "dist/registry"
+  }
+}

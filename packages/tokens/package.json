@@ -2,10 +2,10 @@
   "name": "@xeyy/tokens",
   "version": "0.0.1",
   "private": true,
-  "main": "./src/tokens.stylex.ts",
+  "main": "./src/themes/default/theme.stylex.ts",
   "exports": {
-    "./": "./src/tokens.stylex.ts",
-    "./tokens.stylex": "./src/tokens.stylex.ts"
+    "./": "./src/themes/default/theme.stylex.ts",
+    "./theme.stylex": "./src/themes/default/theme.stylex.ts"
   },
   "dependencies": {
     "@stylexjs/stylex": "^0.19.0"

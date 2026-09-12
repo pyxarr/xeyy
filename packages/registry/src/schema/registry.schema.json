@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://xeyy.tools/schema/registry.schema.json",
+  "$id": "https://xeyy.dev/schema/registry.json",
   "title": "Xeyy Registry Root",
   "type": "object",
   "properties": {

@@ -1,0 +1,25 @@
+{
+  "name": "@xeyy/config",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "check-types": "pnpm exec tsc --noEmit",
+    "generate:schemas": "node src/generate-schemas.ts",
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "@xeyy/eslint-config": "workspace:*",
+    "@xeyy/typescript-config": "workspace:*",
+    "eslint": "10.9.1",
+    "vitest": "latest"
+  },
+  "dependencies": {
+    "zod": "^4.5.4"
+  }
+}
