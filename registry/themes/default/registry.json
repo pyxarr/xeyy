@@ -1,5 +1,5 @@
 {
-  "$schema": "https://xeyy.dev/schema/registry-item.json",
+  "$schema": "https://xeyy-registry.vercel.app/schema/registry-item.json",
   "name": "default-theme",
   "type": "registry:theme",
   "version": "0.0.1",

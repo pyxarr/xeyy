@@ -2,11 +2,12 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 
 import type { RegistryFile, RegistryItem, RegistryRoot } from './schemas.ts';
+import { writeRegistrySchemas } from './generate-schemas.ts';
 import { toPosix } from './paths.ts';
 import { validateRegistryItem, validateRegistryRoot } from './validate.ts';
 
-export const INDEX_SCHEMA_URL = 'https://xeyy.dev/schema/registry-index.json';
-export const ITEM_SCHEMA_URL = 'https://xeyy.dev/schema/registry-item.json';
+export const INDEX_SCHEMA_URL = 'https://xeyy-registry.vercel.app/schema/registry-index.json';
+export const ITEM_SCHEMA_URL = 'https://xeyy-registry.vercel.app/schema/registry-item.json';
 
 /**
  * Public distribution payload for a registry item. Identical to the source
@@ -41,13 +42,17 @@ export interface RegistryIndex {
 export interface BuildResult {
   itemCount: number;
   outputDir: string;
+  /** Public JSON Schema output (`<outputDir>/../schema`), generated from zod. */
+  schemaDir: string;
   index: RegistryIndex;
 }
 
 /**
  * Resolve + embed every registered item's source and write the distribution
- * payload (`index.json` + per-item `<section>/<name>.json`). Fails on any
- * validation or resolution problem rather than emitting a partial registry.
+ * payload (`index.json` + per-item `<section>/<name>.json`), then regenerate
+ * the public JSON Schemas from the canonical zod definitions into the sibling
+ * `schema/` directory. Fails on any validation or resolution problem rather
+ * than emitting a partial registry.
  */
 export function buildRegistry(options: { registryDir: string; outputDir: string; name?: string }): BuildResult {
   const { registryDir, outputDir } = options;
@@ -123,7 +128,10 @@ export function buildRegistry(options: { registryDir: string; outputDir: string;
     writeFileSync(target, `${JSON.stringify(built.item, null, 2)}\n`, 'utf8');
   }
 
-  return { itemCount: builtItems.length, outputDir, index };
+  const schemaDir = resolve(outputDir, '..', 'schema');
+  writeRegistrySchemas(schemaDir);
+
+  return { itemCount: builtItems.length, outputDir, schemaDir, index };
 }
 
 function buildItem(

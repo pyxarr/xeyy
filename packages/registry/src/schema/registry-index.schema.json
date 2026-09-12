@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://xeyy.dev/schema/registry-index.json",
+  "$id": "https://xeyy-registry.vercel.app/schema/registry-index.json",
   "title": "Xeyy Registry Catalog Index",
   "type": "object",
   "properties": {

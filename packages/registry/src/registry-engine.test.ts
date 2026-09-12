@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { existsSync, mkdirSync, rmSync, writeFileSync, readFileSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
+import { z } from 'zod';
 
 import {
   validateCategories,
@@ -20,6 +21,9 @@ import {
   analyzeStylex,
   detectClientSignals,
   rewriteTokenImports,
+  registryItemSchema,
+  registryIndexSchema,
+  registryRootSchema,
 } from './index.ts';
 import type { RegistryCandidate, ScannedFile } from './discovery.ts';
 
@@ -367,6 +371,46 @@ describe('generate → validate → build → status (integration)', () => {
       expect(payload.files.length).toBeGreaterThan(0);
       for (const file of payload.files) expect(typeof file.content, rel).toBe('string');
     }
+  });
+
+  it('build exposes the public JSON Schemas in dist/schema', () => {
+    const outputDir = join(repo.root, 'dist', 'registry');
+    const result = buildRegistry({ registryDir: repo.registryDir, outputDir });
+
+    expect(result.schemaDir).toBe(join(repo.root, 'dist', 'schema'));
+    for (const id of ['registry.json', 'registry-item.json', 'registry-index.json']) {
+      const file = join(result.schemaDir, id);
+      expect(existsSync(file), file).toBe(true);
+      const doc = JSON.parse(readFileSync(file, 'utf8')) as { $id?: string; title?: string };
+      expect(doc.$id, id).toBe(`https://xeyy-registry.vercel.app/schema/${id}`);
+      expect(typeof doc.title, id).toBe('string');
+    }
+  });
+
+  it('build schemas are generated from the current zod definitions', () => {
+    const outputDir = join(repo.root, 'dist', 'registry');
+    buildRegistry({ registryDir: repo.registryDir, outputDir });
+
+    const expected = `${JSON.stringify(
+      {
+        $schema: 'https://json-schema.org/draft/2020-12/schema',
+        $id: 'https://xeyy-registry.vercel.app/schema/registry-item.json',
+        title: 'Xeyy Registry Item',
+        ...z.toJSONSchema(registryItemSchema),
+      },
+      null,
+      2,
+    )}\n`;
+    expect(readFileSync(join(outputDir, '..', 'schema', 'registry-item.json'), 'utf8')).toBe(expected);
+
+    const itemDoc = JSON.parse(expected) as {
+      required: string[];
+      properties: Record<string, unknown>;
+    };
+    // The public item schema remains the authoring contract: `source` is
+    // required there (distribution payloads still omit it at build time).
+    expect(itemDoc.required).toContain('source');
+    expect(itemDoc.required).toContain('files');
   });
 
   it('reports unchanged status when definitions match source', () => {

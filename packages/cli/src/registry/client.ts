@@ -90,7 +90,7 @@ export async function loadRemoteByTemplate(template: string, seedNames: string[]
   }
 
   const index: RegistryIndex = {
-    $schema: 'https://xeyy.dev/schema/registry-index.json',
+    $schema: 'https://xeyy-registry.vercel.app/schema/registry-index.json',
     name: 'Remote Registry',
     items: Array.from(items.entries()).map(([name, item]) => ({
       name,

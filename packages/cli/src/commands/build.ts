@@ -37,6 +37,7 @@ export const build = new Command()
         console.log(JSON.stringify({
           itemCount: result.itemCount,
           outputDir: result.outputDir,
+          schemaDir: result.schemaDir,
           index: result.index,
         }, null, 2));
         return;
@@ -45,6 +46,7 @@ export const build = new Command()
       spinner.succeed(`Built ${result.itemCount} item(s)`);
       console.log(kleur.bold('\nDistribution:'));
       console.log(`  ${kleur.green('index.json')} → ${outputDir}`);
+      console.log(`  ${kleur.dim('schemas')} → ${result.schemaDir}`);
       for (const entry of result.index.items) {
         console.log(`  ✓ ${entry.name}${kleur.dim(` (${entry.section})`)} → ${entry.path}`);
       }

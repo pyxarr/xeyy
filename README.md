@@ -161,14 +161,17 @@ source of truth.
 
 ## Hosting
 
-`xeyy build` emits the distribution to `dist/registry`. Publishing is an
-operational step outside this repository: host `dist/registry` statically so
-that each item is reachable as `https://xeyy.dev/r/{name}.json` (e.g.
-`https://xeyy.dev/r/button.json`, `https://xeyy.dev/r/default-theme.json`). A
-base-URL registry (for example `https://xeyy.dev/r/` + `index.json`) is also
-supported. Consumers point at the public registry via
-`"registries": { "@xeyy": "https://xeyy.dev/r/{name}.json" }` — plain names
-like `xeyy add button` resolve against it without typing a namespace.
+`xeyy build` emits the distribution to `dist/registry` and the regenerated
+public JSON Schemas (from the Zod registry definitions) to `dist/schema`.
+Publishing is an operational step outside this repository: host the build
+output statically so that each item is reachable as `https://xeyy.dev/r/{name}.json`
+(e.g. `https://xeyy.dev/r/button.json`, `https://xeyy.dev/r/default-theme.json`)
+and each schema as `/schema/registry.json`, `/schema/registry-item.json`,
+`/schema/registry-index.json`. A base-URL registry (for example
+`https://xeyy.dev/r/` + `index.json`) is also supported. Consumers point at
+the public registry via `"registries": { "@xeyy": "https://xeyy.dev/r/{name}.json" }`
+— plain names like `xeyy add button` resolve against it without typing a
+namespace.
 
 ## Usage
 
@@ -206,7 +209,7 @@ pnpm validate:config     # xeyy.config.json contract (schema + path safety/exist
 pnpm validate:registry   # source registry definitions (schema, categories, paths, files, duplicates)
 pnpm check-types         # TypeScript across @xeyy/config, @xeyy/registry, xeyy CLI
 pnpm test                # unit suites for @xeyy/config, @xeyy/registry, xeyy CLI
-pnpm build:registry      # emit the generated distribution to dist/registry
+pnpm build:registry      # emit dist/registry + public JSON Schemas to dist/schema
 pnpm validate:dist       # validate dist/registry (index, payloads, public rules, consistency)
 ```
 
