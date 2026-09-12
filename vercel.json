@@ -1,9 +1,11 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "pnpm build:registry",
+  "outputDirectory": "dist",
   "rewrites": [
     {
       "source": "/r/:path*",
-      "destination": "/dist/registry/:path*"
+      "destination": "/registry/:path*"
     }
   ]
 }
