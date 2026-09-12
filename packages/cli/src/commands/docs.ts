@@ -2,7 +2,7 @@ import { Command } from 'commander';
 import kleur from 'kleur';
 import { readConfig } from '../config.ts';
 import { resolveRegistryPath } from '../project/paths.ts';
-import { loadDistRegistry, getItem } from '../registry/client.ts';
+import { loadConfiguredClient, getItem } from '../registry/client.ts';
 
 interface DocsOptions {
   json: boolean;
@@ -13,7 +13,7 @@ export const docs = new Command()
   .description('Show component documentation and usage examples')
   .argument('<item>', 'component name')
   .option('--json', 'output as JSON', false)
-  .action((name: string, opts: DocsOptions) => {
+  .action(async (name: string, opts: DocsOptions) => {
     const projectDir = process.cwd();
     const config = readConfig(projectDir);
     if (!config) {
@@ -21,10 +21,9 @@ export const docs = new Command()
       process.exit(3);
     }
 
-    const registryPath = resolveRegistryPath(config, projectDir);
     let client;
     try {
-      client = loadDistRegistry(registryPath);
+      client = await loadConfiguredClient(config, () => resolveRegistryPath(config, projectDir), [name]);
     } catch (error) {
       console.error(kleur.red((error as Error).message));
       process.exit(4);

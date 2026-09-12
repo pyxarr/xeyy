@@ -5,7 +5,7 @@ import { xeyyConfigSchema, type XeyyConfig } from './schema.ts';
 
 const CONFIG_FILE = 'xeyy.config.json';
 
-const DEFAULT_SCHEMA_URL = 'https://xeyy.dev/schema.json';
+const DEFAULT_SCHEMA_URL = 'https://xeyy-registry.vercel.app/schema/config.schema.json';
 
 export const defaultConfig: XeyyConfig = {
   $schema: DEFAULT_SCHEMA_URL,
@@ -13,7 +13,7 @@ export const defaultConfig: XeyyConfig = {
   theme: { path: 'src/styles/theme.stylex.ts' },
   aliases: { components: '@/components' },
   iconLibrary: 'lucide',
-  registries: { '@xeyy': 'https://xeyy.dev/r/{name}.json' },
+  registries: { '@xeyy': 'https://xeyy-registry.vercel.app/registry' },
 };
 
 export interface ConfigValidationResult {

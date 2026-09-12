@@ -2,7 +2,7 @@ import { Command } from 'commander';
 import kleur from 'kleur';
 import { readConfig } from '../config.ts';
 import { resolveRegistryPath } from '../project/paths.ts';
-import { loadDistRegistry, searchItems } from '../registry/client.ts';
+import { loadConfiguredClient, searchItems } from '../registry/client.ts';
 
 interface SearchOptions {
   json: boolean;
@@ -13,7 +13,7 @@ export const search = new Command()
   .description('Search registry components')
   .argument('<query>', 'search query')
   .option('--json', 'output as JSON', false)
-  .action((query: string, opts: SearchOptions) => {
+  .action(async (query: string, opts: SearchOptions) => {
     const projectDir = process.cwd();
     const config = readConfig(projectDir);
     if (!config) {
@@ -21,10 +21,9 @@ export const search = new Command()
       process.exit(3);
     }
 
-    const registryPath = resolveRegistryPath(config, projectDir);
     let client;
     try {
-      client = loadDistRegistry(registryPath);
+      client = await loadConfiguredClient(config, () => resolveRegistryPath(config, projectDir), []);
     } catch (error) {
       console.error(kleur.red((error as Error).message));
       process.exit(4);

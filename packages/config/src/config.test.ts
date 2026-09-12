@@ -36,12 +36,12 @@ function cleanupTestDir(dir: string): void {
 describe('xeyyConfigSchema', () => {
   it('validates a complete valid config', () => {
     const validConfig = {
-      $schema: 'https://xeyy.dev/schema.json',
+      $schema: 'https://xeyy-registry.vercel.app/schema/config.schema.json',
       components: { path: 'src/components/ui' },
       theme: { path: 'src/styles/theme.stylex.ts' },
       aliases: { components: '@/components' },
       iconLibrary: 'lucide',
-      registries: { '@xeyy': 'https://xeyy.dev/r/{name}.json' },
+      registries: { '@xeyy': 'https://xeyy-registry.vercel.app/registry' },
     };
 
     const result = xeyyConfigSchema.safeParse(validConfig);
@@ -112,7 +112,7 @@ describe('xeyyConfigSchema', () => {
     const validConfig = {
       components: { path: 'src/components/ui' },
       theme: { path: 'src/styles/theme.stylex.ts' },
-      registries: { '@xeyy': 'https://xeyy.dev/r/{name}.json' },
+      registries: { '@xeyy': 'https://xeyy-registry.vercel.app/registry' },
     };
 
     const result = xeyyConfigSchema.safeParse(validConfig);
@@ -163,7 +163,7 @@ describe('xeyyConfigSchema', () => {
 
   it('accepts $schema field', () => {
     const validConfig = {
-      $schema: 'https://xeyy.dev/schema.json',
+      $schema: 'https://xeyy-registry.vercel.app/schema/config.schema.json',
       components: { path: 'src/components/ui' },
       theme: { path: 'src/styles/theme.stylex.ts' },
     };
@@ -195,8 +195,8 @@ describe('defaultConfig', () => {
     expect(defaultConfig.theme.path).toBe('src/styles/theme.stylex.ts');
     expect(defaultConfig.aliases?.components).toBe('@/components');
     expect(defaultConfig.iconLibrary).toBe('lucide');
-    expect(defaultConfig.registries?.['@xeyy']).toBe('https://xeyy.dev/r/{name}.json');
-    expect(defaultConfig.$schema).toBe('https://xeyy.dev/schema.json');
+    expect(defaultConfig.registries?.['@xeyy']).toBe('https://xeyy-registry.vercel.app/registry');
+    expect(defaultConfig.$schema).toBe('https://xeyy-registry.vercel.app/schema/config.schema.json');
   });
 });
 
@@ -266,12 +266,12 @@ describe('config file operations', () => {
 
     it('loads config with all optional fields', () => {
       const fullConfig = {
-        $schema: 'https://xeyy.dev/schema.json',
+        $schema: 'https://xeyy-registry.vercel.app/schema/config.schema.json',
         components: { path: 'src/components/ui' },
         theme: { path: 'src/styles/theme.stylex.ts' },
         aliases: { components: '@/components' },
         iconLibrary: 'lucide',
-        registries: { '@xeyy': 'https://xeyy.dev/r/{name}.json' },
+        registries: { '@xeyy': 'https://xeyy-registry.vercel.app/registry' },
       };
       writeFileSync(getConfigPath(testDir), JSON.stringify(fullConfig));
       const result = loadConfig(testDir);
@@ -368,12 +368,12 @@ describe('config file operations', () => {
     });
 
     it('returns URL for known alias', () => {
-      const config = { ...defaultConfig, registries: { '@xeyy': 'https://xeyy.dev/r/{name}.json' } };
-      expect(resolveRegistryAlias(config, '@xeyy')).toBe('https://xeyy.dev/r/{name}.json');
+      const config = { ...defaultConfig, registries: { '@xeyy': 'https://xeyy-registry.vercel.app/registry' } };
+      expect(resolveRegistryAlias(config, '@xeyy')).toBe('https://xeyy-registry.vercel.app/registry');
     });
 
     it('returns undefined for unknown alias', () => {
-      const config = { ...defaultConfig, registries: { '@xeyy': 'https://xeyy.dev/r/{name}.json' } };
+      const config = { ...defaultConfig, registries: { '@xeyy': 'https://xeyy-registry.vercel.app/registry' } };
       expect(resolveRegistryAlias(config, '@unknown')).toBeUndefined();
     });
   });
@@ -385,12 +385,12 @@ describe('config file operations', () => {
     });
 
     it('substitutes {name} placeholder', () => {
-      const config = { ...defaultConfig, registries: { '@xeyy': 'https://xeyy.dev/r/{name}.json' } };
-      expect(getRegistryUrl(config, '@xeyy', 'button')).toBe('https://xeyy.dev/r/button.json');
+      const config = { ...defaultConfig, registries: { '@xeyy': 'https://example.com/r/{name}.json' } };
+      expect(getRegistryUrl(config, '@xeyy', 'button')).toBe('https://example.com/r/button.json');
     });
 
     it('returns undefined for unknown alias', () => {
-      const config = { ...defaultConfig, registries: { '@xeyy': 'https://xeyy.dev/r/{name}.json' } };
+      const config = { ...defaultConfig, registries: { '@xeyy': 'https://xeyy-registry.vercel.app/registry' } };
       expect(getRegistryUrl(config, '@unknown', 'button')).toBeUndefined();
     });
   });

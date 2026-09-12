@@ -34,7 +34,7 @@ export function loadDistRegistry(distDir: string): RegistryClient {
 
 /**
  * Load a built registry distribution from a remote base URL, e.g.
- * `https://xeyy.dev/registry` where `<base>/index.json` and
+ * `https://xeyy-registry.vercel.app/registry` where `<base>/index.json` and
  * `<base>/<entry.path>` are served.
  */
 export async function loadRemoteRegistry(baseUrl: string): Promise<RegistryClient> {
@@ -63,8 +63,12 @@ export type { RegistryIndex, RegistryItem };
 
 /**
  * Load registry items from a per-item URL template such as
- * `https://xeyy.dev/r/{name}.json`. Seeds the fetch with the requested names
+ * `https://example.com/r/{name}.json`. Seeds the fetch with the requested names
  * and BFS-follows `registryDependencies` until the closure is loaded.
+ *
+ * The default config uses the base-URL form (`loadRemoteRegistry`), which
+ * matches the deployed layout (`<base>/index.json` + `<base>/<entry.path>`).
+ * Keep this template form for custom single-URL registries.
  */
 export async function loadRemoteByTemplate(template: string, seedNames: string[]): Promise<RegistryClient> {
   const items = new Map<string, RegistryItem>();

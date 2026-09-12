@@ -1,5 +1,5 @@
 {
-  "name": "xeyy",
+  "name": "xeyy-monorepo",
   "private": true,
   "scripts": {
     "build": "turbo run build",
@@ -7,10 +7,10 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
-    "test": "turbo run test --filter=@xeyy/config --filter=@xeyy/registry --filter=@xeyy/cli",
+    "test": "turbo run test --filter=@xeyy/config --filter=@xeyy/registry --filter=xeyy",
     "validate:config": "node packages/config/src/validate-config.ts",
     "validate:registry": "node packages/registry/src/validate-registry.ts",
-    "build:registry": "node packages/registry/src/build-registry.ts",
+    "build:registry": "node packages/registry/src/build-registry.ts && node packages/config/src/build-dist-schema.ts",
     "validate:dist": "node packages/registry/src/validate-dist.ts"
   },
   "devDependencies": {

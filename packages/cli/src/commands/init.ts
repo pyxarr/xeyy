@@ -1,12 +1,15 @@
 import { Command } from 'commander';
-import { existsSync, mkdirSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { existsSync, writeFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
 import kleur from 'kleur';
 import ora from 'ora';
 import prompts from 'prompts';
 import { execa } from 'execa';
 import { detectProject } from '../project/detect.ts';
-import { configExists, createDefaultConfig, readConfig, ensureDir } from '../config.ts';
+import { configExists, createDefaultConfig, readConfig, ensureDir, resolveThemePath } from '../config.ts';
+import { loadConfiguredClient } from '../registry/client.ts';
+import { stageFiles } from '../registry/install.ts';
+import { resolveDistDirPath } from '../project/paths.ts';
 import { printLogo } from '../logo.ts';
 
 export const init = new Command()
@@ -86,10 +89,30 @@ export const init = new Command()
 
       const config = createDefaultConfig(projectDir);
       const componentsDir = resolve(projectDir, config.components.path);
-      const themeDir = resolve(projectDir, config.theme.path);
+      const themeDir = resolve(projectDir, dirname(config.theme.path));
 
       ensureDir(componentsDir);
       ensureDir(themeDir);
+
+      const themeTarget = resolveThemePath(config, projectDir);
+      if (!existsSync(themeTarget)) {
+        spinner.text = 'Scaffolding default theme...';
+        try {
+          const client = await loadConfiguredClient(
+            config,
+            () => resolveDistDirPath(config, projectDir),
+            ['default-theme'],
+          );
+          const theme = client.items.get('default-theme');
+          if (!theme) throw new Error('default-theme not found in registry');
+          for (const file of stageFiles([theme], config, projectDir)) {
+            ensureDir(dirname(file.target));
+            writeFileSync(file.target, file.content, 'utf8');
+          }
+        } catch (err) {
+          console.log(kleur.yellow(`  Could not scaffold default theme (${(err as Error).message}). Run \`xeyy add default-theme\` when online.`));
+        }
+      }
 
       spinner.succeed('Configuration created');
 

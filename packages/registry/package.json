@@ -8,7 +8,7 @@
   },
   "scripts": {
     "check-types": "pnpm exec tsc --noEmit",
-    "generate:schemas": "node src/generate-schemas.ts",
+    "generate:schemas": "node src/regenerate-schemas.ts",
     "lint": "eslint .",
     "test": "vitest run",
     "validate:registry": "node src/validate-registry.ts",

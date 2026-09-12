@@ -11,7 +11,7 @@ import { docs } from './commands/docs.ts';
 import { doctor } from './commands/doctor.ts';
 import { registry } from './commands/registry.ts';
 
-const packageJson = { version: '0.0.1' };
+import packageJson from '../package.json' with { type: 'json' };
 
 const program = new Command()
   .name('xeyy')

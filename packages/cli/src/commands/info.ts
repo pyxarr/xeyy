@@ -2,7 +2,7 @@ import { Command } from 'commander';
 import kleur from 'kleur';
 import { readConfig } from '../config.ts';
 import { resolveRegistryPath } from '../project/paths.ts';
-import { loadDistRegistry, getItem } from '../registry/client.ts';
+import { loadConfiguredClient, getItem } from '../registry/client.ts';
 
 interface InfoOptions {
   json: boolean;
@@ -13,7 +13,7 @@ export const info = new Command()
   .description('Show component metadata')
   .argument('<item>', 'component name')
   .option('--json', 'output as JSON', false)
-  .action((name: string, opts: InfoOptions) => {
+  .action(async (name: string, opts: InfoOptions) => {
     const projectDir = process.cwd();
     const config = readConfig(projectDir);
     if (!config) {
@@ -21,10 +21,9 @@ export const info = new Command()
       process.exit(3);
     }
 
-    const registryPath = resolveRegistryPath(config, projectDir);
     let client;
     try {
-      client = loadDistRegistry(registryPath);
+      client = await loadConfiguredClient(config, () => resolveRegistryPath(config, projectDir), [name]);
     } catch (error) {
       console.error(kleur.red((error as Error).message));
       process.exit(4);

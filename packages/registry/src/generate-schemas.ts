@@ -1,6 +1,5 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 
 import { z } from 'zod';
 
@@ -56,34 +55,4 @@ export function writeRegistrySchemas(outputDir: string): string[] {
     writeFileSync(file, generateRegistrySchemaDocument(source), 'utf8');
     return file;
   });
-}
-
-// ---------------------------------------------------------------------------
-// CLI: regenerate the committed schema artifacts in `src/schema/` (existing
-// naming convention `registry-item.schema.json`, ...). The registry build
-// (`build.ts`) invokes `writeRegistrySchemas` directly for the public names.
-// ---------------------------------------------------------------------------
-const SCHEMA_DIR = resolve(fileURLToPath(import.meta.url), '../schema');
-
-/** Committed source-tree artifact filename for each public schema id. */
-const SOURCE_ARTIFACT_FILENAME: Record<string, string> = {
-  'registry.json': 'registry.schema.json',
-  'registry-item.json': 'registry-item.schema.json',
-  'registry-index.json': 'registry-index.schema.json',
-};
-
-function isCliEntry(): boolean {
-  const entry = process.argv[1];
-  return typeof entry === 'string' && resolve(entry) === fileURLToPath(import.meta.url);
-}
-
-if (isCliEntry()) {
-  console.log('Generating registry JSON Schemas from zod (`src/schemas.ts`)...');
-  for (const source of registrySchemaSources) {
-    const file = resolve(SCHEMA_DIR, SOURCE_ARTIFACT_FILENAME[source.id] ?? source.id);
-    mkdirSync(dirname(file), { recursive: true });
-    writeFileSync(file, generateRegistrySchemaDocument(source), 'utf8');
-    console.log(`  wrote ${file}`);
-  }
-  console.log(`Done. JSON Schema artifacts written to ${SCHEMA_DIR}.`);
 }

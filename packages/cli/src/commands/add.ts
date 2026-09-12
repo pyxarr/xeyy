@@ -11,7 +11,7 @@ import { detectPackageManager } from '../project/detect.ts';
 import { resolveDistDirPath } from '../project/paths.ts';
 import { loadConfiguredClient } from '../registry/client.ts';
 import { resolveAll, flattenResolved } from '../registry/resolver.ts';
-import { stageFiles, requiresTheme, displayPath } from '../registry/install.ts';
+import { stageFiles, requiresTheme, displayPath, themeTargetFile } from '../registry/install.ts';
 import { printLogo } from '../logo.ts';
 
 interface AddOptions {
@@ -71,7 +71,12 @@ export const add = new Command()
       const installItems = flattenResolved(resolved);
 
       // Components that import @xeyy/tokens need the theme installed.
-      if (requiresTheme(installItems) && !installItems.some((item) => item.type === 'registry:theme')) {
+let themeAlreadyPresent = false;
+    if (requiresTheme(installItems) && !installItems.some((item) => item.type === 'registry:theme')) {
+      const themeTarget = themeTargetFile(installItems, config, projectDir);
+      if (existsSync(themeTarget)) {
+        themeAlreadyPresent = true;
+      } else {
         const theme = client.items.get('default-theme');
         if (theme) {
           installItems.push(theme);
@@ -80,6 +85,7 @@ export const add = new Command()
           console.log(kleur.yellow('  Install a theme component too, e.g. `xeyy add default-theme`.'));
         }
       }
+    }
 
       spinner.text = 'Planning files...';
       const staged = stageFiles(installItems, config, projectDir);
@@ -220,6 +226,8 @@ export const add = new Command()
       const themeInstalled = installItems.some((i) => i.type === 'registry:theme');
       if (themeInstalled) {
         console.log(`${kleur.dim('Theme written to your configured theme path. Components already point at it.')}`);
+      } else if (themeAlreadyPresent) {
+        console.log(`${kleur.dim('Theme already present at your configured theme path. Components already point at it.')}`);
       }
       console.log();
     } catch (error) {

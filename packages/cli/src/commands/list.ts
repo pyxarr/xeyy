@@ -2,7 +2,7 @@ import { Command } from 'commander';
 import kleur from 'kleur';
 import { readConfig } from '../config.ts';
 import { resolveRegistryPath } from '../project/paths.ts';
-import { loadDistRegistry, listItems } from '../registry/client.ts';
+import { loadConfiguredClient, listItems } from '../registry/client.ts';
 
 interface ListOptions {
   json: boolean;
@@ -12,7 +12,7 @@ export const list = new Command()
   .name('list')
   .description('List available registry components')
   .option('--json', 'output as JSON', false)
-  .action((opts: ListOptions) => {
+  .action(async (opts: ListOptions) => {
     const projectDir = process.cwd();
     const config = readConfig(projectDir);
     if (!config) {
@@ -20,10 +20,9 @@ export const list = new Command()
       process.exit(3);
     }
 
-    const registryPath = resolveRegistryPath(config, projectDir);
     let client;
     try {
-      client = loadDistRegistry(registryPath);
+      client = await loadConfiguredClient(config, () => resolveRegistryPath(config, projectDir), []);
     } catch (error) {
       console.error(kleur.red((error as Error).message));
       process.exit(4);
