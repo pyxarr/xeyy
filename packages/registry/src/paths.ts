@@ -7,8 +7,13 @@ import { dirname, isAbsolute, join, normalize, relative, resolve } from 'node:pa
  * traverses upward from a nested definition dir into the repo root as long as it
  * never leaves `scopeDir` (the resolved containment check below enforces that).
  */
+/** True for any absolute path in the host or Windows convention. */
+function isAbsolutePortable(p: string): boolean {
+  return isAbsolute(p) || /^[A-Za-z]:[\\/]/.test(p) || /^\\\\/.test(p);
+}
+
 export function isSafeRegistryPath(p: string, baseDir: string, scopeDir: string): boolean {
-  if (isAbsolute(p)) {
+  if (isAbsolutePortable(p)) {
     return false;
   }
   if (/[\\/]$/.test(p) || p.includes('\0')) {
@@ -23,7 +28,7 @@ export function isSafeRegistryPath(p: string, baseDir: string, scopeDir: string)
 
 /** Resolve within `baseDir`, returning undefined when the path escapes it. */
 export function resolveWithin(baseDir: string, p: string): string | undefined {
-  if (isAbsolute(p) || p.includes('\0') || /[\\/]$/.test(p)) {
+  if (isAbsolutePortable(p) || p.includes('\0') || /[\\/]$/.test(p)) {
     return undefined;
   }
   const resolved = resolve(baseDir, normalize(p));

@@ -39,7 +39,7 @@ function issuesFromZod(error: {
 
 /** Resolve a path relative to the dist root without escaping it. */
 function safeDistResolve(rootDir: string, p: string): string | undefined {
-  if (isAbsolute(p) || p.includes('..') || p.includes('\0') || /^[\\/]/.test(p)) {
+  if (isAbsolute(p) || /^[A-Za-z]:[\\/]/.test(p) || p.includes('..') || p.includes('\0') || /^[\\/]/.test(p)) {
     return undefined;
   }
   const resolved = resolve(rootDir, p);
