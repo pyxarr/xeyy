@@ -1,5 +1,5 @@
 {
-  "name": "xeyy",
+  "name": "xeyyui",
   "version": "0.0.1",
   "description": "StyleX-native component registry CLI",
   "license": "MIT",
@@ -12,7 +12,7 @@
     "node": ">=24"
   },
   "bin": {
-    "xeyy": "./dist/index.js"
+    "xeyy": "dist/index.js"
   },
   "files": [
     "dist"

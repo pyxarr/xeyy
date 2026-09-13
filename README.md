@@ -207,8 +207,8 @@ Root scripts used by CI (for the strict verification pipeline):
 ```bash
 pnpm validate:config     # xeyy.config.json contract (schema + path safety/existence)
 pnpm validate:registry   # source registry definitions (schema, categories, paths, files, duplicates)
-pnpm check-types         # TypeScript across @xeyy/config, @xeyy/registry, xeyy CLI
-pnpm test                # unit suites for @xeyy/config, @xeyy/registry, xeyy CLI
+pnpm check-types         # TypeScript across @xeyy/config, @xeyy/registry, xeyyui CLI
+pnpm test                # unit suites for @xeyy/config, @xeyy/registry, xeyyui CLI
 pnpm build:registry      # emit dist/registry + public JSON Schemas to dist/schema
 pnpm validate:dist       # validate dist/registry (index, payloads, public rules, consistency)
 ```
@@ -242,6 +242,6 @@ The `registry` block configures authoring (`path`, `source`, optional
 ## Development
 
 See each package's `package.json` for scripts. Packages: `@xeyy/registry`
-(registry engine), `@xeyy/config` (config schema/helpers), `xeyy` CLI,
+(registry engine), `@xeyy/config` (config schema/helpers), `xeyyui` CLI,
 `@xeyy/components` (canonical source), `@xeyy/tokens` (internal token/theme
 source). The full implementation spec lives in `docs/research`.

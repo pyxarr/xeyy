@@ -225,8 +225,8 @@ validation
 A clean Next.js project should be able to:
 
 ```bash
-pnpm dlx xeyy init
-pnpm dlx xeyy add button card input
+pnpm dlx xeyyui init
+pnpm dlx xeyyui add button card input
 ```
 
 and produce a working interface.

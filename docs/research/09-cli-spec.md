@@ -136,7 +136,7 @@ Prepare a compatible project for Xeyy.
 Example:
 
 ```bash
-pnpm dlx xeyy@latest init
+pnpm dlx xeyyui@latest init
 ```
 
 ## Responsibilities
@@ -956,8 +956,8 @@ The Xeyy CLI should feel less like a package installer and more like a **source-
 The ideal experience is:
 
 ```bash
-pnpm dlx xeyy init
-pnpm dlx xeyy add button dialog input
+pnpm dlx xeyyui init
+pnpm dlx xeyyui add button dialog input
 ```
 
 followed by a project that contains understandable, editable source.
