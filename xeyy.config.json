@@ -1,6 +1,6 @@
 {
   "components": { "path": "packages/components/src/ui" },
-  "theme": { "path": "packages/tokens/src/themes/default/theme.stylex.ts" },
+  "theme": { "path": "packages/tokens/src/theme.stylex.ts" },
   "aliases": { "components": "@/components" },
   "registry": {
     "path": "registry",

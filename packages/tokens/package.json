@@ -2,16 +2,24 @@
   "name": "@xeyy/tokens",
   "version": "0.0.1",
   "private": true,
-  "main": "./src/themes/default/theme.stylex.ts",
+  "type": "module",
+  "main": "./src/theme.stylex.ts",
   "exports": {
-    "./": "./src/themes/default/theme.stylex.ts",
-    "./theme.stylex": "./src/themes/default/theme.stylex.ts"
+    ".": "./src/index.ts",
+    "./theme.stylex": "./src/theme.stylex.ts"
+  },
+  "scripts": {
+    "generate:theme": "node scripts/generate-theme.ts",
+    "check-types": "tsc --noEmit",
+    "validate": "node --input-type=module -e \"import('./src/validate.ts').then((m) => m.validate())\"",
+    "test": "node --test src/validate.test.ts"
   },
   "dependencies": {
     "@stylexjs/stylex": "^0.19.0"
   },
   "devDependencies": {
     "@stylexjs/unplugin": "^0.19.0",
+    "@types/node": "^24.13.3",
     "@xeyy/typescript-config": "workspace:*"
   }
 }

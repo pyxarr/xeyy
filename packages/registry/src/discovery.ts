@@ -234,6 +234,22 @@ export function discoverCandidates(options: {
     }
   }
 
+  // The generated default theme lives at <themeSourceDir>/theme.stylex.ts.
+  const defaultThemeFile = join(themesRoot, 'theme.stylex.ts');
+  if (existsSync(defaultThemeFile)) {
+    const definitionDir = join(registryDir, 'themes', 'default');
+    candidates.push({
+      name: 'default-theme',
+      section: 'themes',
+      dir: themesRoot,
+      rel: 'themes/default',
+      files: [{ relativePath: 'theme.stylex.ts', kind: 'code' }],
+      registered: existsSync(join(definitionDir, 'registry.json')),
+      definitionDir,
+      empty: false,
+    });
+  }
+
   candidates.sort((a, b) => a.rel.localeCompare(b.rel));
   return candidates;
 }

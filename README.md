@@ -143,21 +143,25 @@ confirms or edits them.
 
 ## Theme / token distribution
 
-The canonical theme source lives at `packages/tokens/src/themes/default/theme.stylex.ts`
-(the default Xeyy theme; more themes nest under `packages/tokens/src/themes/<name>/`).
+The canonical default theme source lives at `packages/tokens/src/theme.stylex.ts`.
+It is a **generated** self-contained file (neutral base color + vega style) with
+no imports other than `@stylexjs/stylex`, so it can be copied verbatim into
+consumer projects. Its single source of truth is the composable token data in
+`packages/tokens/src` (`.ts` data modules under `base-colors`, `themes`,
+`styles`); regenerate it with `pnpm --filter @xeyy/tokens generate:theme`.
 `packages/tokens` remains the internal Xeyy design-system package — consumers
 **never** install `@xeyy/tokens`. The `registry:theme` item references that
-canonical source; `xeyy build` embeds it; `xeyy add <theme>` installs it to the
+generated source; `xeyy build` embeds it; `xeyy add <theme>` installs it to the
 consumer's configured `theme.path` (default `src/styles/theme.stylex.ts`) and
 component source that imports `@xeyy/tokens` has those imports rewritten at
 install time to a relative import of the installed theme file.
 
 `theme.path` is the **installed** theme destination (`xeyy add <theme>` writes
 it there; for consumers the default is `src/styles/theme.stylex.ts`). This
-repository's own config resolves `theme.path` to the canonical dev theme at
-`packages/tokens/src/themes/default/theme.stylex.ts` — installed output is a
-verbatim copy of that file, so in-repo installs and development share the same
-source of truth.
+repository's own config resolves `theme.path` to the canonical generated default
+at `packages/tokens/src/theme.stylex.ts` — installed output is a verbatim copy
+of that file (kept fresh by `generate:theme` + tests), so in-repo installs and
+development share the same source of truth.
 
 ## Hosting
 

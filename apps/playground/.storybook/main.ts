@@ -40,7 +40,7 @@ const config: StorybookConfig = {
         aliases: {
           '@xeyy/tokens': path.resolve(
             dirname(fileURLToPath(import.meta.url)),
-            '../../packages/tokens/src/themes/default/theme.stylex.ts',
+            '../../packages/tokens/src/theme.stylex.ts',
           ),
         },
 
