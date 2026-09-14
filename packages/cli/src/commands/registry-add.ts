@@ -24,6 +24,21 @@ interface RegistryAddOptions {
   all: boolean;
 }
 
+/** Convert a component name into a human-readable title: `date-picker` → `Date Picker`. */
+export function humanizeTitle(name: string): string {
+  return name
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .split(/[-_.\s]+/)
+    .filter(Boolean)
+    .map((word) => word[0]!.toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+}
+
+/** Resolve the item title: `--title` override wins, otherwise a human-readable default. */
+export function resolveItemTitle(optsTitle: string | undefined, name: string): string {
+  return optsTitle ?? humanizeTitle(name);
+}
+
 function selectCandidates(
   candidates: RegistryCandidate[],
   names: string[],
@@ -147,15 +162,24 @@ export const registryAdd = new Command()
           // First pass: resolve suggestions (title/description/categories).
           const suggested = generateDefinition(candidate, { registryDir, candidates });
 
-          let title = opts.title ?? suggested.titleFallback;
+          let title = resolveItemTitle(opts.title, candidate.name);
           let description = opts.description ?? suggested.descriptionFallback;
           let categories = suggested.item.categories ?? [];
 
-          // Interactive pass: only ask for metadata that cannot be reliably
-          // determined — description and category confirmation. Everything else
-          // is derived automatically.
+          // Interactive pass: confirm the generated title and ask for metadata
+          // that cannot be reliably determined — description and categories.
           const interactive = !opts.json && !opts.yes && !opts.dryRun;
           if (interactive) {
+            const { title: t } = await prompts({
+              type: 'text',
+              name: 'title',
+              message: `Title for ${candidate.name}:`,
+              initial: title,
+            });
+            if (typeof t === 'string' && t.trim().length > 0) {
+              title = t.trim();
+            }
+
             const { description: desc } = await prompts({
               type: 'text',
               name: 'description',
