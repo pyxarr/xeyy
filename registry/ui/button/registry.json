@@ -2,13 +2,11 @@
   "$schema": "https://xeyy-registry.vercel.app/schema/registry-item.json",
   "name": "button",
   "type": "registry:ui",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "title": "Button",
   "description": "A themeable Button component built on Base UI and StyleX.",
   "categories": [
-    "form",
-    "interactive",
-    "accessible"
+    "interactive"
   ],
   "source": "../../../packages/components/src/ui/button",
   "files": [
@@ -26,22 +24,18 @@
     "@stylexjs/stylex"
   ],
   "fingerprint": {
-    "button.tsx": "816ab61d4629d0de55c5b07a33090713c24e30c904b9916a9f0c37632cc60a0a"
+    "button.tsx": "b284a6f1c499e58bb4be5787304afdbb1c6bba3c590a9f1fd5cbbcbbefab9943"
   },
   "stylex": {
     "features": [
-      "create",
-      "keyframes"
+      "create"
     ],
     "compiler": true,
     "conditions": [
+      "disabled",
       "focus-visible",
-      "hover"
+      "hover",
+      "media"
     ]
-  },
-  "accessibility": {
-    "keyboard": true,
-    "focusManagement": true,
-    "aria": true
   }
 }

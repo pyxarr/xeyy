@@ -1,205 +1,275 @@
-import * as React from 'react';
-import * as stylex from '@stylexjs/stylex';
-import { Button as BaseButton } from '@base-ui/react/button';
-import { semantic, radii, spacing } from '@xeyy/tokens/theme.stylex';
+import * as stylex from "@stylexjs/stylex";
+import type { StyleXStyles } from "@stylexjs/stylex";
+import { Button as ButtonPrimitive } from "@base-ui/react/button";
+import { semantic } from "@xeyy/tokens/theme.stylex";
 
-type ButtonVariant = 'primary' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link';
-type ButtonSize = 'sm' | 'md' | 'lg' | 'icon';
+type ButtonVariant =
+  "default" | "outline" | "secondary" | "ghost" | "destructive" | "link";
 
-interface ButtonProps {
+type ButtonSize =
+  "default" | "xs" | "sm" | "lg" | "icon" | "icon-xs" | "icon-sm" | "icon-lg";
+
+interface ButtonVariantsProps {
   variant?: ButtonVariant;
   size?: ButtonSize;
-  loading?: boolean;
-  fullWidth?: boolean;
-  children?: React.ReactNode;
-  disabled?: boolean;
-  type?: 'button' | 'submit' | 'reset';
-  focusableWhenDisabled?: boolean;
-  nativeButton?: boolean;
-  as?: React.ReactElement;
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
-  onKeyDown?: React.KeyboardEventHandler<HTMLButtonElement>;
-  id?: string;
-  name?: string;
-  form?: string;
-  'aria-label'?: string;
-  'aria-labelledby'?: string;
-  'aria-describedby'?: string;
-  'aria-expanded'?: boolean | 'true' | 'false';
-  'aria-pressed'?: boolean | 'true' | 'false' | 'mixed';
-  'aria-haspopup'?: boolean | 'true' | 'false' | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
 }
 
-const spin = stylex.keyframes({
-    from: { transform: 'rotate(0deg)' },
-    to: { transform: 'rotate(360deg)' },
-});
+type ButtonProps = Omit<ButtonPrimitive.Props, "className" | "style"> &
+  ButtonVariantsProps & {
+    style?: StyleXStyles;
+  };
+
+function buttonVariants({
+  variant = "default",
+  size = "default",
+}: ButtonVariantsProps = {}) {
+  return [styles.base, variants[variant], sizes[size]];
+}
 
 const styles = stylex.create({
-    base: {
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: spacing[2],
-        borderRadius: radii.md,
-        fontWeight: '500',
-        fontSize: '14px',
-        lineHeight: '1',
-        cursor: 'pointer',
-        border: 'none',
-        outline: 'none',
-        textDecoration: 'none',
-        whiteSpace: 'nowrap',
-        userSelect: 'none',
-        transition: 'opacity 0.15s, background-color 0.15s',
-        ':hover': {
-            opacity: '0.9',
-        },
-        ':focus-visible': {
-            outlineWidth: '2px',
-            outlineStyle: 'solid',
-            outlineColor: semantic.focusRing,
-            outlineOffset: '2px',
-        },
-        '[data-disabled]': {
-            opacity: '0.5',
-            cursor: 'not-allowed',
-            pointerEvents: 'none',
-        },
+  base: {
+    display: "inline-flex",
+    flexShrink: 0,
+    alignItems: "center",
+    justifyContent: "center",
+    whiteSpace: "nowrap",
+    padding: 0,
+    borderRadius: `calc(${semantic.radius} - 2px)`,
+    border: "1px solid transparent",
+    backgroundClip: "padding-box",
+    fontSize: "0.875rem",
+    lineHeight: "1.25rem",
+    fontWeight: "500",
+    transitionProperty: "all",
+    transitionDuration: "150ms",
+    transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+    outlineStyle: "none",
+    userSelect: "none",
+
+    ":disabled": {
+      pointerEvents: "none",
+      opacity: "0.5",
     },
 
-    // Variants set color/border only. `link` also overrides sizing, which is
-    // why size is applied BEFORE variant in stylex.props() below — variant
-    // needs the last word for that one case.
-    primary: {
-        backgroundColor: semantic.primary,
-        color: semantic.primaryForeground,
-    },
-    secondary: {
-        backgroundColor: semantic.surface,
-        color: semantic.foreground,
-        borderWidth: '1px',
-        borderStyle: 'solid',
-        borderColor: semantic.border,
-    },
-    destructive: {
-        backgroundColor: semantic.destructive,
-        color: semantic.destructiveForeground,
-    },
-    outline: {
-        backgroundColor: 'transparent',
-        color: semantic.foreground,
-        borderWidth: '1px',
-        borderStyle: 'solid',
-        borderColor: semantic.border,
-    },
-    ghost: {
-        backgroundColor: 'transparent',
-        color: semantic.foreground,
-        ':hover': {
-            backgroundColor: semantic.surface,
-            opacity: '1',
-        },
-    },
-    link: {
-        backgroundColor: 'transparent',
-        color: semantic.primary,
-        textDecoration: 'underline',
-        textUnderlineOffset: '4px',
-        height: 'auto',
-        paddingInline: '0',
+    ":focus-visible": {
+      borderColor: semantic.ring,
+      boxShadow: `0 0 0 3px color-mix(in oklab, ${semantic.ring} 50%, transparent)`,
     },
 
-    // Sizes
-    sm: {
-        height: '32px',
-        paddingInline: spacing[3],
-        fontSize: '13px',
-        borderRadius: radii.sm,
-    },
-    md: {
-        height: '40px',
-        paddingInline: spacing[4],
-        fontSize: '14px',
-    },
-    lg: {
-        height: '48px',
-        paddingInline: spacing[6],
-        fontSize: '16px',
-        borderRadius: radii.lg,
-    },
-    icon: {
-        height: '40px',
-        width: '40px',
-        paddingInline: '0',
+    '[aria-invalid="true"]': {
+      borderColor: semantic.destructive,
+      boxShadow: `0 0 0 3px color-mix(in oklab, ${semantic.destructive} 20%, transparent)`,
     },
 
-    // States
-    fullWidth: {
-        width: '100%',
+    ":active:not([aria-haspopup])": {
+      translate: "0 1px",
     },
-    loading: {
-        cursor: 'wait',
+
+    "@media (prefers-color-scheme: dark)": {
+      '[aria-invalid="true"]': {
+        borderColor: `color-mix(in oklab, ${semantic.destructive} 50%, transparent)`,
+        boxShadow: `0 0 0 3px color-mix(in oklab, ${semantic.destructive} 40%, transparent)`,
+      },
     },
+  },
 });
 
-const spinnerStyles = stylex.create({
-    spinner: {
-        width: '14px',
-        height: '14px',
-        borderWidth: '2px',
-        borderStyle: 'solid',
-        borderColor: 'currentColor',
-        borderTopColor: 'transparent',
-        borderRadius: radii.full,
-        animationName: spin,
-        animationDuration: '0.6s',
-        animationTimingFunction: 'linear',
-        animationIterationCount: 'infinite',
+const variants = stylex.create({
+  default: {
+    backgroundColor: semantic.primary,
+    color: semantic.primaryForeground,
+
+    ":hover": {
+      backgroundColor: `color-mix(in oklab, ${semantic.primary} 80%, transparent)`,
     },
+  },
+
+  outline: {
+    borderColor: semantic.border,
+    backgroundColor: semantic.background,
+    boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+
+    ":hover": {
+      backgroundColor: semantic.muted,
+      color: semantic.foreground,
+    },
+
+    '[aria-expanded="true"]': {
+      backgroundColor: semantic.muted,
+      color: semantic.foreground,
+    },
+
+    "@media (prefers-color-scheme: dark)": {
+      backgroundColor: `color-mix(in oklab, ${semantic.input} 30%, transparent)`,
+      borderColor: semantic.input,
+
+      ":hover": {
+        backgroundColor: `color-mix(in oklab, ${semantic.input} 50%, transparent)`,
+      },
+    },
+  },
+
+  secondary: {
+    backgroundColor: semantic.secondary,
+    color: semantic.secondaryForeground,
+
+    ":hover": {
+      backgroundColor: `color-mix(in oklch, ${semantic.secondary}, ${semantic.foreground} 5%)`,
+    },
+
+    '[aria-expanded="true"]': {
+      backgroundColor: semantic.secondary,
+      color: semantic.secondaryForeground,
+    },
+  },
+
+  ghost: {
+    ":hover": {
+      backgroundColor: semantic.muted,
+      color: semantic.foreground,
+    },
+
+    '[aria-expanded="true"]': {
+      backgroundColor: semantic.muted,
+      color: semantic.foreground,
+    },
+
+    "@media (prefers-color-scheme: dark)": {
+      ":hover": {
+        backgroundColor: `color-mix(in oklab, ${semantic.muted} 50%, transparent)`,
+      },
+    },
+  },
+
+  destructive: {
+    backgroundColor: `color-mix(in oklab, ${semantic.destructive} 10%, transparent)`,
+    color: semantic.destructive,
+
+    ":hover": {
+      backgroundColor: `color-mix(in oklab, ${semantic.destructive} 20%, transparent)`,
+    },
+
+    ":focus-visible": {
+      boxShadow: `0 0 0 3px color-mix(in oklab, ${semantic.destructive} 20%, transparent)`,
+    },
+
+    "@media (prefers-color-scheme: dark)": {
+      backgroundColor: `color-mix(in oklab, ${semantic.destructive} 20%, transparent)`,
+
+      ":focus-visible": {
+        boxShadow: `0 0 0 3px color-mix(in oklab, ${semantic.destructive} 40%, transparent)`,
+      },
+    },
+  },
+
+  link: {
+    color: semantic.primary,
+    textUnderlineOffset: "4px",
+
+    ":hover": {
+      textDecorationLine: "underline",
+    },
+  },
 });
 
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-    function Button(
-        {
-            variant = 'primary',
-            size = 'md',
-            loading = false,
-            fullWidth = false,
-            disabled,
-            focusableWhenDisabled,
-            nativeButton = true,
-            as,
-            children,
-            ...props
-        },
-        ref,
-    ) {
-        const labelId = React.useId();
+const sizes = stylex.create({
+  default: {
+    height: "2.25rem",
+    gap: "0.375rem",
+    paddingInline: "0.625rem",
 
-        return (
-            <BaseButton
-                {...props}
-                ref={ref}
-                render={as}
-                nativeButton={nativeButton}
-                disabled={disabled || loading}
-                focusableWhenDisabled={loading || focusableWhenDisabled}
-                aria-labelledby={loading ? labelId : props['aria-labelledby']}
-                {...stylex.props(
-                    styles.base,
-                    styles[size],
-                    styles[variant],
-                    fullWidth && styles.fullWidth,
-                    loading && styles.loading,
-                )}
-            >
-                {loading ? (
-                    <span {...stylex.props(spinnerStyles.spinner)} aria-hidden="true" />
-                ) : null}
-
-                <span id={loading ? labelId : undefined}>{children}</span>
-            </BaseButton>
-        );
+    ':has([data-icon="inline-end"])': {
+      paddingRight: "0.5rem",
     },
-);
+
+    ':has([data-icon="inline-start"])': {
+      paddingLeft: "0.5rem",
+    },
+  },
+
+  xs: {
+    height: "1.5rem",
+    gap: "0.25rem",
+    borderRadius: `min(calc(${semantic.radius} - 2px), 8px)`,
+    paddingInline: "0.5rem",
+    fontSize: "0.75rem",
+    lineHeight: "1rem",
+
+    ':has([data-icon="inline-end"])': {
+      paddingRight: "0.375rem",
+    },
+
+    ':has([data-icon="inline-start"])': {
+      paddingLeft: "0.375rem",
+    },
+  },
+
+  sm: {
+    height: "2rem",
+    gap: "0.25rem",
+    borderRadius: `min(calc(${semantic.radius} - 2px), 10px)`,
+    paddingInline: "0.625rem",
+
+    ':has([data-icon="inline-end"])': {
+      paddingRight: "0.375rem",
+    },
+
+    ':has([data-icon="inline-start"])': {
+      paddingLeft: "0.375rem",
+    },
+  },
+
+  lg: {
+    height: "2.5rem",
+    gap: "0.375rem",
+    paddingInline: "0.625rem",
+
+    ':has([data-icon="inline-end"])': {
+      paddingRight: "0.5rem",
+    },
+
+    ':has([data-icon="inline-start"])': {
+      paddingLeft: "0.5rem",
+    },
+  },
+
+  icon: {
+    height: "2.25rem",
+    width: "2.25rem",
+  },
+
+  "icon-xs": {
+    height: "1.5rem",
+    width: "1.5rem",
+    borderRadius: `min(calc(${semantic.radius} - 2px), 8px)`,
+  },
+
+  "icon-sm": {
+    height: "2rem",
+    width: "2rem",
+    borderRadius: `min(calc(${semantic.radius} - 2px), 10px)`,
+  },
+
+  "icon-lg": {
+    height: "2.5rem",
+    width: "2.5rem",
+  },
+});
+
+function Button({
+  style,
+  variant = "default",
+  size = "default",
+  ...props
+}: ButtonProps) {
+  return (
+    <ButtonPrimitive
+      data-slot="button"
+      {...props}
+      {...stylex.props(...buttonVariants({ variant, size }), style)}
+    />
+  );
+}
+
+export { Button, buttonVariants };
+export type { ButtonVariant, ButtonSize, ButtonVariantsProps, ButtonProps };

@@ -5,6 +5,9 @@
   "version": "0.0.1",
   "title": "Default Theme",
   "description": "The central Xeyy theme and semantic token system.",
+  "categories": [
+    "server-compatible"
+  ],
   "source": "../../../packages/tokens/src",
   "files": [
     {
@@ -17,6 +20,14 @@
     "@stylexjs/stylex"
   ],
   "fingerprint": {
-    "theme.stylex.ts": "997f2a041fcb8e0aeebec0f1acaf85d9edbf25bb1457a8404d7364979b472841"
+    "theme.stylex.ts": "da2027e29831ac2b4cbe6a35d0c57bac8b4ff88432c4f720f3b06297cb4c7e40"
+  },
+  "stylex": {
+    "minVersion": "0.19.0",
+    "features": [
+      "createTheme",
+      "defineVars"
+    ],
+    "compiler": true
   }
 }
