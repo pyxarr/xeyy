@@ -1,6 +1,7 @@
 import { Command } from 'commander';
 import kleur from 'kleur';
 import { readConfig } from '../config.ts';
+import { resolveProjectRoot } from '../project/root.ts';
 import { resolveRegistryPath } from '../project/paths.ts';
 import { loadConfiguredClient, searchItems } from '../registry/client.ts';
 
@@ -14,7 +15,7 @@ export const search = new Command()
   .argument('<query>', 'search query')
   .option('--json', 'output as JSON', false)
   .action(async (query: string, opts: SearchOptions) => {
-    const projectDir = process.cwd();
+    const projectDir = resolveProjectRoot();
     const config = readConfig(projectDir);
     if (!config) {
       console.error(kleur.red('No xeyy.config.json found. Run `xeyy init` first.'));

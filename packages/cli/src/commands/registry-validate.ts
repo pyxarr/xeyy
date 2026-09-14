@@ -4,6 +4,7 @@ import { dirname, join } from 'node:path';
 import kleur from 'kleur';
 import { validateFullRegistry } from '@xeyy/registry';
 import { authoringPaths } from '../registry/authoring.ts';
+import { resolveProjectRoot } from '../project/root.ts';
 
 interface RegistryValidateOptions {
   json: boolean;
@@ -16,7 +17,7 @@ export const registryValidate = new Command()
   .option('--json', 'output as JSON', false)
   .option('--registry <dir>', 'registry definition directory (default: config.registry.path)')
   .action((opts: RegistryValidateOptions) => {
-    const projectDir = process.cwd();
+    const projectDir = resolveProjectRoot();
     const base = authoringPaths(projectDir);
     const registryDir = opts.registry ?? base.registryDir;
 

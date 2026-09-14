@@ -11,7 +11,8 @@ import {
   readCandidateDefinition,
   type RegistryItem,
 } from '@xeyy/registry';
-import { authoringPaths, readRoot, writeRoot, rel, statusGlyph } from '../registry/authoring.ts';
+import { authoringPaths, readRoot, writeRoot, rel, statusGlyph, requireSourceDir } from '../registry/authoring.ts';
+import { resolveProjectRoot } from '../project/root.ts';
 
 interface RegistrySyncOptions {
   dryRun: boolean;
@@ -38,10 +39,12 @@ export const registrySync = new Command()
   .option('--registry <dir>', 'registry definition directory (default: config.registry.path)')
   .option('--source <dir>', 'component source root (default: config.registry.source)')
   .action(async (opts: RegistrySyncOptions) => {
-    const projectDir = process.cwd();
+    const projectDir = resolveProjectRoot();
     const base = authoringPaths(projectDir);
     const registryDir = opts.registry ?? base.registryDir;
     const sourceDir = opts.source ?? base.sourceDir;
+
+    requireSourceDir(sourceDir);
 
     const spinner = ora('Reconciling registry...').start();
     try {

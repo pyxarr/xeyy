@@ -1,7 +1,8 @@
 import { Command } from 'commander';
 import kleur from 'kleur';
 import { analyzeStatus } from '@xeyy/registry';
-import { authoringPaths, statusGlyph, typeLabel } from '../registry/authoring.ts';
+import { authoringPaths, requireSourceDir, statusGlyph, typeLabel } from '../registry/authoring.ts';
+import { resolveProjectRoot } from '../project/root.ts';
 
 interface RegistryStatusOptions {
   json: boolean;
@@ -18,10 +19,12 @@ export const registryStatus = new Command()
   .option('--registry <dir>', 'registry definition directory (default: config.registry.path)')
   .option('--source <dir>', 'component source root (default: config.registry.source)')
   .action((opts: RegistryStatusOptions) => {
-    const projectDir = process.cwd();
+    const projectDir = resolveProjectRoot();
     const base = authoringPaths(projectDir);
     const registryDir = opts.registry ?? base.registryDir;
     const sourceDir = opts.source ?? base.sourceDir;
+
+    requireSourceDir(sourceDir);
 
     const report = analyzeStatus({ sourceDir, registryDir, themeSourceDir: base.themeDir });
 

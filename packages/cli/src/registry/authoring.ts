@@ -18,6 +18,18 @@ export interface AuthoringPaths {
   config: XeyyConfig | null;
 }
 
+/**
+ * Fail clearly when the component source root is missing or invalid. Without
+ * this guard a wrong path silently produces an empty status result
+ * ("All components up to date").
+ */
+export function requireSourceDir(sourceDir: string): void {
+  if (existsSync(sourceDir)) return;
+  console.error(kleur.red(`Component source not found at ${sourceDir}.`));
+  console.error(kleur.dim('  Expected layout: <source>/ui, <source>/components, <source>/blocks, <source>/themes, <source>/internal'));
+  process.exit(4);
+}
+
 export function authoringPaths(projectDir: string): AuthoringPaths {
   const config = readConfig(projectDir);
   return {

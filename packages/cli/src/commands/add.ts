@@ -8,6 +8,7 @@ import { execa } from 'execa';
 import type { RegistryItem } from '@xeyy/registry';
 import { readConfig, ensureDir } from '../config.ts';
 import { detectPackageManager } from '../project/detect.ts';
+import { resolveProjectRoot } from '../project/root.ts';
 import { resolveDistDirPath } from '../project/paths.ts';
 import { loadConfiguredClient } from '../registry/client.ts';
 import { resolveAll, flattenResolved } from '../registry/resolver.ts';
@@ -44,7 +45,7 @@ export const add = new Command()
   .option('--json', 'output as JSON', false)
   .option('--overwrite', 'overwrite existing files without prompting', false)
   .action(async (itemNames: string[], opts: AddOptions) => {
-    const projectDir = process.cwd();
+    const projectDir = resolveProjectRoot();
     const spinner = ora('Loading registry...').start();
 
     try {

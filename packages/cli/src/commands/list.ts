@@ -1,6 +1,7 @@
 import { Command } from 'commander';
 import kleur from 'kleur';
 import { readConfig } from '../config.ts';
+import { resolveProjectRoot } from '../project/root.ts';
 import { resolveRegistryPath } from '../project/paths.ts';
 import { loadConfiguredClient, listItems } from '../registry/client.ts';
 
@@ -13,7 +14,7 @@ export const list = new Command()
   .description('List available registry components')
   .option('--json', 'output as JSON', false)
   .action(async (opts: ListOptions) => {
-    const projectDir = process.cwd();
+    const projectDir = resolveProjectRoot();
     const config = readConfig(projectDir);
     if (!config) {
       console.error(kleur.red('No xeyy.config.json found. Run `xeyy init` first.'));

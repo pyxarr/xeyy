@@ -4,6 +4,7 @@ import kleur from 'kleur';
 import ora from 'ora';
 import { buildRegistry } from '@xeyy/registry';
 import { authoringPaths } from '../registry/authoring.ts';
+import { resolveProjectRoot } from '../project/root.ts';
 
 interface BuildOptions {
   json: boolean;
@@ -18,7 +19,7 @@ export const build = new Command()
   .option('--registry <dir>', 'registry definition directory (default: config.registry.path)')
   .option('--output <dir>', 'distribution output directory (default: config.registry.dist)')
   .action((opts: BuildOptions) => {
-    const projectDir = process.cwd();
+    const projectDir = resolveProjectRoot();
     const base = authoringPaths(projectDir);
     const registryDir = opts.registry ?? base.registryDir;
     const outputDir = opts.output ?? base.distDir;

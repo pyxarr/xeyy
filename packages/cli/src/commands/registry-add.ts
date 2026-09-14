@@ -10,6 +10,7 @@ import {
   type RegistryCandidate,
 } from '@xeyy/registry';
 import { authoringPaths, readRoot, writeRoot, rel } from '../registry/authoring.ts';
+import { resolveProjectRoot } from '../project/root.ts';
 
 interface RegistryAddOptions {
   yes: boolean;
@@ -55,7 +56,7 @@ export const registryAdd = new Command()
   .option('--registry <dir>', 'registry definition directory (default: config.registry.path)')
   .option('--source <dir>', 'component source root (default: config.registry.source)')
   .action(async (names: string[], opts: RegistryAddOptions) => {
-    const projectDir = process.cwd();
+    const projectDir = resolveProjectRoot();
     const spinner = ora('Discovering components...').start();
 
     try {

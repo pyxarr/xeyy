@@ -2,6 +2,7 @@ import { Command } from 'commander';
 import { existsSync } from 'node:fs';
 import kleur from 'kleur';
 import { detectProject } from '../project/detect.ts';
+import { resolveProjectRoot } from '../project/root.ts';
 import { configExists, readConfig } from '../config.ts';
 import { resolveRegistryPath } from '../project/paths.ts';
 import { loadDistRegistry } from '../registry/client.ts';
@@ -25,7 +26,7 @@ export const doctor = new Command()
   .description('Diagnose your project')
   .option('--json', 'output as JSON', false)
   .action((opts: DoctorOptions) => {
-    const projectDir = process.cwd();
+    const projectDir = resolveProjectRoot();
     const checks: Check[] = [];
 
     const info = detectProject(projectDir);

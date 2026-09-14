@@ -6,6 +6,7 @@ import ora from 'ora';
 import prompts from 'prompts';
 import { execa } from 'execa';
 import { detectProject } from '../project/detect.ts';
+import { resolveProjectRoot } from '../project/root.ts';
 import { configExists, createDefaultConfig, readConfig, ensureDir, resolveThemePath } from '../config.ts';
 import { loadConfiguredClient } from '../registry/client.ts';
 import { stageFiles } from '../registry/install.ts';
@@ -16,7 +17,7 @@ export const init = new Command()
   .name('init')
   .description('Initialize Xeyy in your project')
   .action(async () => {
-    const projectDir = process.cwd();
+    const projectDir = resolveProjectRoot();
     const spinner = ora('Detecting project...').start();
 
     try {
