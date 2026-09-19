@@ -4,9 +4,16 @@
   "version": "0.0.1",
   "items": [
     "./themes/default/registry.json",
+    "./ui/badge/registry.json",
     "./ui/button/registry.json",
     "./ui/checkbox/registry.json",
     "./ui/dialog/registry.json",
-    "./ui/select/registry.json"
+    "./ui/input/registry.json",
+    "./ui/popover/registry.json",
+    "./ui/radio-group/registry.json",
+    "./ui/select/registry.json",
+    "./ui/switch/registry.json",
+    "./ui/tabs/registry.json",
+    "./ui/tooltip/registry.json"
   ]
 }

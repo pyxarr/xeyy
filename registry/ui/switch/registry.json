@@ -1,0 +1,39 @@
+{
+  "$schema": "https://xeyy-registry.vercel.app/schema/registry-item.json",
+  "name": "switch",
+  "type": "registry:ui",
+  "version": "1.0.0",
+  "title": "Switch",
+  "description": "A themeable Switch component built on Base UI and StyleX.",
+  "categories": [
+    "interactive"
+  ],
+  "source": "../../../packages/components/src/ui/switch",
+  "files": [
+    {
+      "path": "switch.example.tsx",
+      "type": "example"
+    },
+    {
+      "path": "switch.tsx",
+      "type": "registry:ui"
+    }
+  ],
+  "dependencies": [
+    "@base-ui/react",
+    "@stylexjs/stylex"
+  ],
+  "fingerprint": {
+    "switch.tsx": "cfed4f97a02fea1d961fc189c8e5c42b5b0d5dffa2728b603abe054c4526c1d6"
+  },
+  "stylex": {
+    "features": [
+      "create"
+    ],
+    "compiler": true,
+    "conditions": [
+      "focus-visible",
+      "media"
+    ]
+  }
+}

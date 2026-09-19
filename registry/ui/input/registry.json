@@ -1,0 +1,41 @@
+{
+  "$schema": "https://xeyy-registry.vercel.app/schema/registry-item.json",
+  "name": "input",
+  "type": "registry:ui",
+  "version": "1.0.0",
+  "title": "Input",
+  "description": "A themeable Input component built on Base UI and StyleX.",
+  "categories": [
+    "form",
+    "interactive"
+  ],
+  "source": "../../../packages/components/src/ui/input",
+  "files": [
+    {
+      "path": "input.example.tsx",
+      "type": "example"
+    },
+    {
+      "path": "input.tsx",
+      "type": "registry:ui"
+    }
+  ],
+  "dependencies": [
+    "@base-ui/react",
+    "@stylexjs/stylex"
+  ],
+  "fingerprint": {
+    "input.tsx": "9ae3c38e538f6dd2192096bd20b237a42a2997fec2ef9303ffc2a0d069abc9ab"
+  },
+  "stylex": {
+    "features": [
+      "create"
+    ],
+    "compiler": true,
+    "conditions": [
+      "disabled",
+      "focus-visible",
+      "media"
+    ]
+  }
+}

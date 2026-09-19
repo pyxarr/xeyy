@@ -1,0 +1,41 @@
+{
+  "$schema": "https://xeyy-registry.vercel.app/schema/registry-item.json",
+  "name": "badge",
+  "type": "registry:ui",
+  "version": "1.0.0",
+  "title": "Badge",
+  "description": "A themeable Badge component built on Base UI and StyleX.",
+  "categories": [
+    "data-display",
+    "interactive"
+  ],
+  "source": "../../../packages/components/src/ui/badge",
+  "files": [
+    {
+      "path": "badge.example.tsx",
+      "type": "example"
+    },
+    {
+      "path": "badge.tsx",
+      "type": "registry:ui"
+    }
+  ],
+  "dependencies": [
+    "@base-ui/react",
+    "@stylexjs/stylex"
+  ],
+  "fingerprint": {
+    "badge.tsx": "1fd38f4c91caddd7f1a000d53564df6ba6b01e57d29da75260a3be0d495f74ab"
+  },
+  "stylex": {
+    "features": [
+      "create"
+    ],
+    "compiler": true,
+    "conditions": [
+      "focus-visible",
+      "hover",
+      "media"
+    ]
+  }
+}

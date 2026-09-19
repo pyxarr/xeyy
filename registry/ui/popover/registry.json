@@ -1,0 +1,40 @@
+{
+  "$schema": "https://xeyy-registry.vercel.app/schema/registry-item.json",
+  "name": "popover",
+  "type": "registry:ui",
+  "version": "1.0.0",
+  "title": "Popover",
+  "description": "A themeable Popover component built on Base UI and StyleX.",
+  "categories": [
+    "overlay",
+    "interactive",
+    "client-only"
+  ],
+  "source": "../../../packages/components/src/ui/popover",
+  "files": [
+    {
+      "path": "popover.example.tsx",
+      "type": "example"
+    },
+    {
+      "path": "popover.tsx",
+      "type": "registry:ui"
+    }
+  ],
+  "dependencies": [
+    "@base-ui/react",
+    "@stylexjs/stylex"
+  ],
+  "fingerprint": {
+    "popover.tsx": "3401d4d765e527bea5b1458fb1198b3dd22979fd0c62d3b69299529b460f0431"
+  },
+  "stylex": {
+    "features": [
+      "create"
+    ],
+    "compiler": true,
+    "conditions": [
+      "media"
+    ]
+  }
+}

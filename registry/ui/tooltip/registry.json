@@ -1,0 +1,40 @@
+{
+  "$schema": "https://xeyy-registry.vercel.app/schema/registry-item.json",
+  "name": "tooltip",
+  "type": "registry:ui",
+  "version": "1.0.0",
+  "title": "Tooltip",
+  "description": "A themeable Tooltip component built on Base UI and StyleX.",
+  "categories": [
+    "overlay",
+    "interactive",
+    "client-only"
+  ],
+  "source": "../../../packages/components/src/ui/tooltip",
+  "files": [
+    {
+      "path": "tooltip.example.tsx",
+      "type": "example"
+    },
+    {
+      "path": "tooltip.tsx",
+      "type": "registry:ui"
+    }
+  ],
+  "dependencies": [
+    "@base-ui/react",
+    "@stylexjs/stylex"
+  ],
+  "fingerprint": {
+    "tooltip.tsx": "650437750f6e09ac55ff9c4fdd5d9f904ba0bcf38609d896d003b14a9e2461e3"
+  },
+  "stylex": {
+    "features": [
+      "create"
+    ],
+    "compiler": true,
+    "conditions": [
+      "media"
+    ]
+  }
+}

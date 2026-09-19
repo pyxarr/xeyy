@@ -1,0 +1,40 @@
+{
+  "$schema": "https://xeyy-registry.vercel.app/schema/registry-item.json",
+  "name": "radio-group",
+  "type": "registry:ui",
+  "version": "1.0.0",
+  "title": "Radio Group",
+  "description": "A themeable RadioGroup component built on Base UI and StyleX.",
+  "categories": [
+    "form",
+    "interactive"
+  ],
+  "source": "../../../packages/components/src/ui/radio-group",
+  "files": [
+    {
+      "path": "radio-group.example.tsx",
+      "type": "example"
+    },
+    {
+      "path": "radio-group.tsx",
+      "type": "registry:ui"
+    }
+  ],
+  "dependencies": [
+    "@base-ui/react",
+    "@stylexjs/stylex"
+  ],
+  "fingerprint": {
+    "radio-group.tsx": "460f367051617476dd0b71575dee171cbaa39bff21cb1890168421303e07790c"
+  },
+  "stylex": {
+    "features": [
+      "create"
+    ],
+    "compiler": true,
+    "conditions": [
+      "focus-visible",
+      "media"
+    ]
+  }
+}

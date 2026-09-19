@@ -1,0 +1,42 @@
+{
+  "$schema": "https://xeyy-registry.vercel.app/schema/registry-item.json",
+  "name": "tabs",
+  "type": "registry:ui",
+  "version": "1.0.0",
+  "title": "Tabs",
+  "description": "A themeable Tabs component built on Base UI and StyleX.",
+  "categories": [
+    "navigation",
+    "interactive"
+  ],
+  "source": "../../../packages/components/src/ui/tabs",
+  "files": [
+    {
+      "path": "tabs.example.tsx",
+      "type": "example"
+    },
+    {
+      "path": "tabs.tsx",
+      "type": "registry:ui"
+    }
+  ],
+  "dependencies": [
+    "@base-ui/react",
+    "@stylexjs/stylex"
+  ],
+  "fingerprint": {
+    "tabs.tsx": "e47a99f3cee4cfca7332249c376eec24fc0b9a584f538024436a75dc0d761d3c"
+  },
+  "stylex": {
+    "features": [
+      "create"
+    ],
+    "compiler": true,
+    "conditions": [
+      "disabled",
+      "focus-visible",
+      "hover",
+      "media"
+    ]
+  }
+}
