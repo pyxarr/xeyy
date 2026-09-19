@@ -9,5 +9,5 @@ export default defineConfig({
   target: 'node24',
   outDir: 'dist',
   treeshake: true,
-  noExternal: ['@xeyy/config', '@xeyy/registry'],
+  noExternal: ['@xeyy/config', '@xeyy/icons', '@xeyy/registry'],
 });

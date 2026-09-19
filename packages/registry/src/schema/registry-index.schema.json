@@ -72,6 +72,37 @@
               "minLength": 1
             }
           },
+          "icons": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "library": {
+                  "type": "string",
+                  "enum": [
+                    "lucide",
+                    "tabler",
+                    "hugeicons",
+                    "phosphor",
+                    "remixicon"
+                  ]
+                },
+                "names": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "required": [
+                "library",
+                "names"
+              ],
+              "additionalProperties": false
+            }
+          },
           "fileCount": {
             "type": "integer",
             "minimum": 0,

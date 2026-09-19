@@ -1,20 +1,30 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
+import type { IconLibraryId } from '@xeyy/icons';
+
 import { xeyyConfigSchema, type XeyyConfig } from './schema.ts';
 
 const CONFIG_FILE = 'xeyy.config.json';
 
 const DEFAULT_SCHEMA_URL = 'https://xeyy-registry.vercel.app/schema/config.schema.json';
 
+/** Icon library used when a project config omits `iconLibrary`. */
+export const DEFAULT_ICON_LIBRARY: IconLibraryId = 'lucide';
+
 export const defaultConfig: XeyyConfig = {
   $schema: DEFAULT_SCHEMA_URL,
   components: { path: 'src/components/ui' },
   theme: { path: 'src/styles/theme.stylex.ts' },
   aliases: { components: '@/components' },
-  iconLibrary: 'lucide',
+  iconLibrary: DEFAULT_ICON_LIBRARY,
   registries: { '@xeyy': 'https://xeyy-registry.vercel.app/registry' },
 };
+
+/** Resolve the effective project icon library; defaults to lucide. */
+export function resolveIconLibrary(config: Pick<XeyyConfig, 'iconLibrary'> | null | undefined): IconLibraryId {
+  return config?.iconLibrary ?? DEFAULT_ICON_LIBRARY;
+}
 
 export interface ConfigValidationResult {
   valid: boolean;

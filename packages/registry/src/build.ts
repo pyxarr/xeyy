@@ -26,6 +26,7 @@ export interface RegistryIndexEntry {
   categories?: string[];
   dependencies?: string[];
   registryDependencies?: string[];
+  icons?: RegistryItem['icons'];
   fileCount: number;
   /** Path to the built item payload, relative to the registry output dir. */
   path: string;
@@ -196,6 +197,7 @@ function buildItem(
     ...(item.license ? { license: item.license } : {}),
     ...(item.dependencies ? { dependencies: item.dependencies } : {}),
     ...(item.registryDependencies ? { registryDependencies: item.registryDependencies } : {}),
+    ...(item.icons ? { icons: item.icons } : {}),
     files,
     ...(item.fingerprint ? { fingerprint: item.fingerprint } : {}),
     ...(item.stylex ? { stylex: item.stylex } : {}),
@@ -217,6 +219,7 @@ function indexEntryFor(built: { item: DistRegistryItem; section: string; builtPa
     ...(item.categories ? { categories: item.categories } : {}),
     ...(item.dependencies ? { dependencies: item.dependencies } : {}),
     ...(item.registryDependencies ? { registryDependencies: item.registryDependencies } : {}),
+    ...(item.icons ? { icons: item.icons } : {}),
     fileCount: built.item.files.length,
     path: builtPath,
   };

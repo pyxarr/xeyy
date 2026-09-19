@@ -2,12 +2,12 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 
 import { ITEM_SCHEMA_URL } from './build.ts';
-import { analyzeAccessibility, analyzeStylex, detectClientSignals, detectRegistryDependencies, extractNpmDependencies, type KnownComponent } from './analysis.ts';
+import { analyzeAccessibility, analyzeIconUsage, analyzeStylex, detectClientSignals, detectRegistryDependencies, extractNpmDependencies, mergeIconUsage, type KnownComponent } from './analysis.ts';
 import { suggestCategories } from './categories.ts';
 import { fingerprintCandidate } from './status.ts';
 import type { ScannedFile } from './discovery.ts';
 import type { RegistryCandidate } from './discovery.ts';
-import type { RegistryFile, RegistryItem, RegistryItemType } from './schemas.ts';
+import type { RegistryFile, RegistryIconUsage, RegistryItem, RegistryItemType } from './schemas.ts';
 import { registryItemTypeSchema } from './schemas.ts';
 import { toPosix } from './paths.ts';
 import { validateRegistryItem } from './validate.ts';
@@ -95,6 +95,7 @@ export function generateDefinition(
   let focusManagement = false;
   let moduleLevelBrowserGlobal = false;
   let stylexVersion: string | undefined;
+  const iconUsages: RegistryIconUsage[] = [];
 
   if (candidate.section === 'themes') {
     // Theme resolution: stylex version from an ancestor package.json.
@@ -119,6 +120,8 @@ export function generateDefinition(
     const signals = detectClientSignals(content);
     moduleLevelBrowserGlobal = moduleLevelBrowserGlobal || signals.moduleLevelBrowserGlobal;
 
+    for (const usage of analyzeIconUsage(content)) iconUsages.push(usage);
+
     for (const spec of extractBaseUiSpecs(content)) baseUI.add(spec);
   }
 
@@ -126,6 +129,7 @@ export function generateDefinition(
 
   const npmDeps = extractNpmDependencies(candidate.files, (f) => readContent(f, candidate.dir));
   const registryMatches = detectRegistryDependencies(candidate.files, {
+    fileDir: candidate.dir,
     sourceDir: findSourceRoot(candidate),
     candidates: options.candidates,
     read: (f) => readContent(f, candidate.dir),
@@ -175,6 +179,7 @@ export function generateDefinition(
     files,
     ...(npmDeps.length > 0 ? { dependencies: npmDeps } : {}),
     ...(registryDependencies.length > 0 ? { registryDependencies } : {}),
+    ...(iconUsages.length > 0 ? { icons: mergeIconUsage(iconUsages) } : {}),
     fingerprint: fingerprintCandidate(candidate),
     ...(stylexFeatures.size > 0
       ? {

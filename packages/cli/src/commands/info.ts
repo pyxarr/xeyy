@@ -1,5 +1,6 @@
 import { Command } from 'commander';
 import kleur from 'kleur';
+import { getIconLibrary } from '@xeyy/icons';
 import { readConfig } from '../config.ts';
 import { resolveProjectRoot } from '../project/root.ts';
 import { resolveRegistryPath } from '../project/paths.ts';
@@ -59,6 +60,15 @@ export const info = new Command()
       console.log(kleur.bold('\n  Dependencies:'));
       for (const dep of item.dependencies) {
         console.log(`    ${dep}`);
+      }
+    }
+
+    if (item.icons?.length) {
+      console.log(kleur.bold('\n  Icons:'));
+      for (const usage of item.icons) {
+        const library = getIconLibrary(usage.library);
+        const names = usage.names.length > 0 ? ` — ${usage.names.join(', ')}` : '';
+        console.log(`    ${library.displayName}${kleur.dim(` (${library.packageName})`)}${names}`);
       }
     }
 

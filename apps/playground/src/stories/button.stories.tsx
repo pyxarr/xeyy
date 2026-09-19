@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import * as stylex from '@stylexjs/stylex';
 import { expect, fireEvent, fn, userEvent, within } from 'storybook/test';
 import { Button } from '@xeyy/components';
 
@@ -12,17 +13,12 @@ const meta: Meta<typeof Button> = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['primary', 'secondary', 'destructive', 'outline', 'ghost', 'link'],
+      options: ['default', 'outline', 'secondary', 'ghost', 'destructive', 'link'],
     },
     size: {
       control: 'select',
-      options: ['sm', 'md', 'lg', 'icon'],
+      options: ['default', 'xs', 'sm', 'lg', 'icon', 'icon-xs', 'icon-sm', 'icon-lg'],
     },
-    loading: { control: 'boolean' },
-    disabled: { control: 'boolean' },
-    fullWidth: { control: 'boolean' },
-    nativeButton: { control: 'boolean' },
-    focusableWhenDisabled: { control: 'boolean' },
   },
   args: {
     onClick: fn(),
@@ -33,82 +29,157 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // ---------------------------------------------------------------------------
-// Visual stories
+// Visual stories — one per variant
 // ---------------------------------------------------------------------------
 
-export const Primary: Story = {
-  args: { variant: 'primary', children: 'Primary' },
-};
-
-export const Secondary: Story = {
-  args: { variant: 'secondary', children: 'Secondary' },
-};
-
-export const Destructive: Story = {
-  args: { variant: 'destructive', children: 'Destructive' },
+export const Default: Story = {
+  args: { variant: 'default', children: 'Default' },
 };
 
 export const Outline: Story = {
   args: { variant: 'outline', children: 'Outline' },
 };
 
+export const Secondary: Story = {
+  args: { variant: 'secondary', children: 'Secondary' },
+};
+
 export const Ghost: Story = {
   args: { variant: 'ghost', children: 'Ghost' },
+};
+
+export const Destructive: Story = {
+  args: { variant: 'destructive', children: 'Destructive' },
 };
 
 export const Link: Story = {
   args: { variant: 'link', children: 'Link' },
 };
 
-export const Small: Story = {
-  args: { size: 'sm', children: 'Small' },
-};
-
-export const Medium: Story = {
-  args: { size: 'md', children: 'Medium' },
-};
-
-export const Large: Story = {
-  args: { size: 'lg', children: 'Large' },
-};
-
-export const IconSize: Story = {
-  args: { size: 'icon', children: '★' },
-};
-
-export const FullWidth: Story = {
-  args: { fullWidth: true, children: 'Full Width Button' },
-  parameters: { docs: { description: { story: 'Spans the full width of its container.' } } },
-};
-
-export const Loading: Story = {
-  args: { loading: true, children: 'Saving…' },
-};
-
-export const Disabled: Story = {
-  args: { disabled: true, children: 'Disabled' },
-};
-
 export const AllVariants: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-      <Button variant="primary">Primary</Button>
-      <Button variant="secondary">Secondary</Button>
-      <Button variant="destructive">Destructive</Button>
+      <Button variant="default">Default</Button>
       <Button variant="outline">Outline</Button>
+      <Button variant="secondary">Secondary</Button>
       <Button variant="ghost">Ghost</Button>
+      <Button variant="destructive">Destructive</Button>
       <Button variant="link">Link</Button>
     </div>
   ),
 };
 
+// ---------------------------------------------------------------------------
+// Visual stories — one per size
+// ---------------------------------------------------------------------------
+
+export const SizeDefault: Story = {
+  name: 'Size: default',
+  args: { size: 'default', children: 'Default' },
+};
+
+export const SizeXs: Story = {
+  name: 'Size: xs',
+  args: { size: 'xs', children: 'XS' },
+};
+
+export const SizeSm: Story = {
+  name: 'Size: sm',
+  args: { size: 'sm', children: 'SM' },
+};
+
+export const SizeLg: Story = {
+  name: 'Size: lg',
+  args: { size: 'lg', children: 'LG' },
+};
+
+export const SizeIcon: Story = {
+  name: 'Size: icon',
+  args: { size: 'icon', children: '★' },
+};
+
+export const SizeIconXs: Story = {
+  name: 'Size: icon-xs',
+  args: { size: 'icon-xs', children: '★' },
+};
+
+export const SizeIconSm: Story = {
+  name: 'Size: icon-sm',
+  args: { size: 'icon-sm', children: '★' },
+};
+
+export const SizeIconLg: Story = {
+  name: 'Size: icon-lg',
+  args: { size: 'icon-lg', children: '★' },
+};
+
 export const AllSizes: Story = {
   render: () => (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-      <Button size="sm">Small</Button>
-      <Button size="md">Medium</Button>
-      <Button size="lg">Large</Button>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+      <Button size="default">Default</Button>
+      <Button size="xs">XS</Button>
+      <Button size="sm">SM</Button>
+      <Button size="lg">LG</Button>
       <Button size="icon">★</Button>
+      <Button size="icon-xs">★</Button>
+      <Button size="icon-sm">★</Button>
+      <Button size="icon-lg">★</Button>
+    </div>
+  ),
+};
+
+// ---------------------------------------------------------------------------
+// Visual stories — states, icons, RTL
+// ---------------------------------------------------------------------------
+
+export const Disabled: Story = {
+  args: { disabled: true, children: 'Disabled' },
+};
+
+export const Invalid: Story = {
+  name: 'Invalid (aria-invalid)',
+  args: { 'aria-invalid': 'true', children: 'Invalid' },
+};
+
+const fullWidthStyles = stylex.create({
+  button: { width: '100%', justifyContent: 'center' },
+});
+
+export const FullWidth: Story = {
+  name: 'Full width (style override)',
+  render: () => <Button style={fullWidthStyles.button}>Full width</Button>,
+};
+
+export const IconStart: Story = {
+  name: 'Icon: inline-start',
+  render: () => (
+    <Button>
+      <svg data-icon="inline-start" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+        <path d="M21 12a9 9 0 1 1-6.2-8.6" />
+      </svg>
+      Refresh
+    </Button>
+  ),
+};
+
+export const IconEnd: Story = {
+  name: 'Icon: inline-end',
+  render: () => (
+    <Button>
+      Save
+      <svg data-icon="inline-end" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+        <path d="M5 12h14M13 6l6 6-6 6" />
+      </svg>
+    </Button>
+  ),
+};
+
+export const Rtl: Story = {
+  name: 'RTL',
+  render: () => (
+    <div style={{ display: 'flex', gap: '8px' }} dir="rtl">
+      <Button>زر</Button>
+      <Button variant="outline">التالي</Button>
     </div>
   ),
 };
@@ -129,52 +200,50 @@ export const ClickFiresOnClick: Story = {
 };
 
 export const DisabledPreventsClick: Story = {
-  name: 'Interaction: disabled blocks onClick',
+  name: 'Interaction: disabled blocks onClick and click',
   args: { disabled: true, children: 'No click' },
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
     const button = canvas.getByRole('button', { name: /no click/i });
+    await expect(button).toBeDisabled();
     await fireEvent.click(button);
     await expect(args.onClick).not.toHaveBeenCalled();
-    await expect(button).toBeDisabled();
   },
 };
 
-export const LoadingPreventsClick: Story = {
-  name: 'Interaction: loading blocks onClick',
-  args: { loading: true, children: 'Saving…' },
+export const KeyboardActivation: Story = {
+  name: 'Interaction: Enter activates',
+  args: { children: 'Press Enter' },
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
-    const button = canvas.getByRole('button');
-    await fireEvent.click(button);
-    await expect(args.onClick).not.toHaveBeenCalled();
-    await expect(button).toHaveAttribute('aria-disabled', 'true');
+    const button = canvas.getByRole('button', { name: /press enter/i });
+    button.focus();
+    await expect(button).toHaveFocus();
+    await userEvent.keyboard('{Enter}');
+    await expect(args.onClick).toHaveBeenCalledOnce();
   },
 };
 
-export const LoadingShowsSpinner: Story = {
-  name: 'Interaction: loading shows spinner',
-  args: { loading: true, children: 'Saving…' },
-  play: async ({ canvasElement }) => {
+export const KeyboardSpaceActivation: Story = {
+  name: 'Interaction: Space activates',
+  args: { children: 'Press Space' },
+  play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
-    const button = canvas.getByRole('button');
-    const spinner = button.querySelector('[aria-hidden="true"]');
-    await expect(spinner).toBeInTheDocument();
-    await expect(button).toHaveAttribute('aria-labelledby');
+    const button = canvas.getByRole('button', { name: /press space/i });
+    button.focus();
+    await userEvent.keyboard(' ');
+    await expect(args.onClick).toHaveBeenCalledOnce();
   },
 };
 
-export const LoadingHasAriaLabelledBy: Story = {
-  name: 'Interaction: loading aria-labelledby points to label',
-  args: { loading: true, children: 'Uploading' },
+export const TabFocusable: Story = {
+  name: 'Interaction: keyboard focusable',
+  args: { children: 'Focus me' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const button = canvas.getByRole('button');
-    const labelId = button.getAttribute('aria-labelledby');
-    await expect(labelId).toBeTruthy();
-    const label = canvasElement.ownerDocument.getElementById(labelId!);
-    await expect(label).toBeInTheDocument();
-    await expect(label).toHaveTextContent('Uploading');
+    const button = canvas.getByRole('button', { name: /focus me/i });
+    await userEvent.tab();
+    await expect(button).toHaveFocus();
   },
 };
 
@@ -188,37 +257,10 @@ export const TypeSubmit: Story = {
   },
 };
 
-export const KeyboardAccessible: Story = {
-  name: 'Interaction: keyboard focusable',
-  args: { children: 'Focus me' },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const button = canvas.getByRole('button', { name: /focus me/i });
-    await userEvent.tab();
-    await expect(button).toHaveFocus();
-  },
-};
-
-export const FocusableWhenDisabled: Story = {
-  name: 'Interaction: focusableWhenDisabled keeps focus',
-  args: { disabled: true, focusableWhenDisabled: true, children: 'Still focusable' },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const button = canvas.getByRole('button', { name: /still focusable/i });
-    await userEvent.tab();
-    await expect(button).toHaveFocus();
-    await expect(button).toHaveAttribute('aria-disabled', 'true');
-  },
-};
-
-// ---------------------------------------------------------------------------
-// Props passthrough stories
-// ---------------------------------------------------------------------------
-
-export const AsLink: Story = {
-  name: 'Interaction: as renders custom element',
+export const RenderAsLink: Story = {
+  name: 'Interaction: render as <a>',
   args: {
-    as: <a href="https://example.com" />,
+    render: <a href="https://example.com" />,
     children: 'Link button',
   },
   play: async ({ canvasElement }) => {
@@ -229,28 +271,16 @@ export const AsLink: Story = {
   },
 };
 
-export const NativeButtonFalse: Story = {
-  name: 'Interaction: nativeButton=false',
+export const RenderAsDiv: Story = {
+  name: 'Interaction: render as <div>',
   args: {
-    nativeButton: false,
-    children: 'Non-native',
+    render: <div />,
+    children: 'Div button',
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const el = canvas.getByText('Non-native');
-    await expect(el).toBeInTheDocument();
-    await expect(el.tagName).not.toBe('BUTTON');
-  },
-};
-
-export const KeyDownHandler: Story = {
-  name: 'Interaction: onKeyDown fires',
-  args: { children: 'Press Enter' },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const button = canvas.getByRole('button', { name: /press enter/i });
-    await userEvent.click(button);
-    await userEvent.keyboard('{Enter}');
+    const el = canvas.getByText('Div button');
+    await expect(el.tagName).toBe('DIV');
   },
 };
 
@@ -274,6 +304,16 @@ export const NamePassthrough: Story = {
   },
 };
 
+export const FormPassthrough: Story = {
+  name: 'Interaction: form renders on element',
+  args: { form: 'my-form', children: 'Submit' },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole('button', { name: /submit/i });
+    await expect(button).toHaveAttribute('form', 'my-form');
+  },
+};
+
 export const AriaLabel: Story = {
   name: 'Interaction: aria-label renders',
   args: { 'aria-label': 'Close dialog', children: '×' },
@@ -281,16 +321,6 @@ export const AriaLabel: Story = {
     const canvas = within(canvasElement);
     const button = canvas.getByRole('button', { name: /close dialog/i });
     await expect(button).toHaveAttribute('aria-label', 'Close dialog');
-  },
-};
-
-export const AriaDescribedby: Story = {
-  name: 'Interaction: aria-describedby renders',
-  args: { 'aria-describedby': 'hint-text', children: 'Submit' },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const button = canvas.getByRole('button', { name: /submit/i });
-    await expect(button).toHaveAttribute('aria-describedby', 'hint-text');
   },
 };
 
@@ -304,42 +334,22 @@ export const AriaExpanded: Story = {
   },
 };
 
-export const AriaPressed: Story = {
-  name: 'Interaction: aria-pressed renders',
-  args: { 'aria-pressed': 'true', children: 'Bold' },
+export const AriaInvalid: Story = {
+  name: 'Interaction: aria-invalid renders',
+  args: { 'aria-invalid': 'true', children: 'Invalid' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const button = canvas.getByRole('button', { name: /bold/i });
-    await expect(button).toHaveAttribute('aria-pressed', 'true');
+    const button = canvas.getByRole('button', { name: /invalid/i });
+    await expect(button).toHaveAttribute('aria-invalid', 'true');
   },
 };
 
-export const AriaHaspopup: Story = {
-  name: 'Interaction: aria-haspopup renders',
-  args: { 'aria-haspopup': 'menu', children: 'Options' },
+export const DataSlotPresent: Story = {
+  name: 'Interaction: data-slot=button',
+  args: { children: 'Slot' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const button = canvas.getByRole('button', { name: /options/i });
-    await expect(button).toHaveAttribute('aria-haspopup', 'menu');
-  },
-};
-
-export const FormPassthrough: Story = {
-  name: 'Interaction: form renders on element',
-  args: { form: 'my-form', children: 'Submit' },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const button = canvas.getByRole('button', { name: /submit/i });
-    await expect(button).toHaveAttribute('form', 'my-form');
-  },
-};
-
-export const NonLoadingHasNoLabelledby: Story = {
-  name: 'Interaction: non-loading has no aria-labelledby',
-  args: { children: 'Normal' },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const button = canvas.getByRole('button', { name: /normal/i });
-    await expect(button).not.toHaveAttribute('aria-labelledby');
+    const button = canvas.getByRole('button', { name: /slot/i });
+    await expect(button).toHaveAttribute('data-slot', 'button');
   },
 };

@@ -20,6 +20,9 @@ import {
   classifyImport,
   analyzeStylex,
   detectClientSignals,
+  detectRegistryDependencies,
+  flattenSiblingImport,
+  flattenSiblingImports,
   rewriteTokenImports,
   registryItemSchema,
   registryIndexSchema,
@@ -204,6 +207,41 @@ describe('analysis', () => {
       'C:/proj/src/styles/theme.stylex.ts',
     );
     expect(rewritten).toContain("from '../../../styles/theme.stylex'");
+  });
+
+  it('detects a folder-style sibling import as a registry dependency', () => {
+    const buttonDir = 'C:/proj/packages/components/src/ui/button';
+    const dialogDir = 'C:/proj/packages/components/src/ui/dialog';
+    const files: ScannedFile[] = [{ relativePath: 'dialog.tsx', kind: 'code' }];
+    const matches = detectRegistryDependencies(files, {
+      fileDir: dialogDir,
+      sourceDir: 'C:/proj/packages/components/src',
+      candidates: [
+        { name: 'button', section: 'ui', dir: buttonDir },
+        { name: 'dialog', section: 'ui', dir: dialogDir },
+      ],
+      read: () => `import { Button } from '../button/button';`,
+    });
+    expect(matches).toEqual([{ name: 'button', fromFile: 'dialog.tsx', spec: '../button/button' }]);
+  });
+
+  it('flattens folder-style sibling imports for the flat install layout', () => {
+    const content = `import { Button } from '../button/button';\n`;
+    expect(flattenSiblingImports(content, ['button', 'checkbox'])).toBe(`import { Button } from './button';\n`);
+  });
+
+  it('strips the source extension when flattening a sibling import', () => {
+    expect(flattenSiblingImport('../button/button.x.tsx', ['button'])).toBe('./button.x');
+  });
+
+  it('leaves non-sibling and local imports untouched', () => {
+    const content = [
+      `import { X } from 'lucide-react';`,
+      `import { Thing } from './thing';`,
+      `import { A } from '../unknown/a';`,
+      ``,
+    ].join('\n');
+    expect(flattenSiblingImports(content, ['button'])).toBe(content);
   });
 });
 

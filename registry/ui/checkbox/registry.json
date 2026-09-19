@@ -1,0 +1,56 @@
+{
+  "$schema": "https://xeyy-registry.vercel.app/schema/registry-item.json",
+  "name": "checkbox",
+  "type": "registry:ui",
+  "version": "1.0.0",
+  "title": "Checkbox",
+  "description": "A themeable Checkbox component built on Base UI and StyleX.",
+  "categories": [
+    "form",
+    "interactive",
+    "accessible"
+  ],
+  "source": "../../../packages/components/src/ui/checkbox",
+  "files": [
+    {
+      "path": "checkbox.example.tsx",
+      "type": "example"
+    },
+    {
+      "path": "checkbox.tsx",
+      "type": "registry:ui"
+    }
+  ],
+  "dependencies": [
+    "@base-ui/react",
+    "@stylexjs/stylex",
+    "lucide-react"
+  ],
+  "icons": [
+    {
+      "library": "lucide",
+      "names": [
+        "Check",
+        "Minus"
+      ]
+    }
+  ],
+  "fingerprint": {
+    "checkbox.tsx": "e6e8f008812c24e5c21ec666155f13669ed69e951b811df2e475fec73ddd8540"
+  },
+  "stylex": {
+    "features": [
+      "create"
+    ],
+    "compiler": true,
+    "conditions": [
+      "focus-visible",
+      "media"
+    ]
+  },
+  "accessibility": {
+    "keyboard": false,
+    "focusManagement": false,
+    "aria": true
+  }
+}

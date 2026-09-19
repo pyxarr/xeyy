@@ -1,0 +1,21 @@
+{
+  "name": "@xeyy/icons",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "check-types": "pnpm exec tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "@xeyy/eslint-config": "workspace:*",
+    "@xeyy/typescript-config": "workspace:*",
+    "eslint": "10.9.1",
+    "vitest": "^5.0.0"
+  }
+}

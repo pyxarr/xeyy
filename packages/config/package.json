@@ -21,6 +21,7 @@
     "vitest": "latest"
   },
   "dependencies": {
+    "@xeyy/icons": "workspace:*",
     "zod": "^4.5.4"
   }
 }

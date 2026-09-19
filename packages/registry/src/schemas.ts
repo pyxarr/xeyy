@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { iconLibraryIds } from '@xeyy/icons';
+
 /**
  * Registry zod schemas — the single source of truth for both TypeScript
  * types and the emitted JSON Schema artifacts (see `generate-schemas.ts`).
@@ -77,6 +79,22 @@ export const accessibilityMetadataSchema = z
   })
   .strict();
 
+/** Icon library identifiers accepted by registry metadata (single-sourced from `@xeyy/icons`). */
+export const iconLibrarySchema = z.enum(iconLibraryIds);
+
+/**
+ * Icon-library usage detected in an item's own source at registration time.
+ * Derived from source imports only, so registry output is deterministic and
+ * independent of any consumer's `iconLibrary` configuration.
+ */
+export const iconUsageSchema = z
+  .object({
+    library: iconLibrarySchema,
+    /** Exported names imported from the icon package; empty for opaque (namespace/default) imports. */
+    names: z.array(z.string().min(1)),
+  })
+  .strict();
+
 export const registryItemSchema = z
   .object({
     /** URL of the item JSON Schema. */
@@ -102,6 +120,8 @@ export const registryItemSchema = z
     dependencies: z.array(z.string().min(1)).optional(),
     /** Other Xeyy registry items this item depends on. */
     registryDependencies: z.array(z.string().min(1)).optional(),
+    /** Icon libraries imported by this item's source, recorded at registration time. */
+    icons: z.array(iconUsageSchema).min(1).optional(),
     /** Per-file source fingerprints recorded at registration time (change detection). */
     fingerprint: z.record(z.string(), z.string()).optional(),
     stylex: stylexMetadataSchema.optional(),
@@ -140,6 +160,8 @@ export const registryIndexEntrySchema = z
     categories: z.array(z.string().min(1)).optional(),
     dependencies: z.array(z.string().min(1)).optional(),
     registryDependencies: z.array(z.string().min(1)).optional(),
+    /** Icon libraries the item's source imports (mirrors the payload metadata). */
+    icons: z.array(iconUsageSchema).min(1).optional(),
     /** Number of distributable files in the built payload. */
     fileCount: z.number().int().nonnegative(),
     /** Path to the built item payload, relative to the registry output dir. */
@@ -170,3 +192,4 @@ export type RegistryFile = z.infer<typeof registryFileSchema>;
 export type LicenseMetadata = z.infer<typeof licenseMetadataSchema>;
 export type StyleXMetadata = z.infer<typeof stylexMetadataSchema>;
 export type AccessibilityMetadata = z.infer<typeof accessibilityMetadataSchema>;
+export type RegistryIconUsage = z.infer<typeof iconUsageSchema>;

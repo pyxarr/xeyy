@@ -4,6 +4,9 @@
   "version": "0.0.1",
   "items": [
     "./themes/default/registry.json",
-    "./ui/button/registry.json"
+    "./ui/button/registry.json",
+    "./ui/checkbox/registry.json",
+    "./ui/dialog/registry.json",
+    "./ui/select/registry.json"
   ]
 }

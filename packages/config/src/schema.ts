@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { iconLibraryIds } from '@xeyy/icons';
+
 export const componentsConfigSchema = z.object({
   path: z.string().min(1),
 }).strict();
@@ -33,12 +35,18 @@ export const registryConfigSchema = z.object({
   themes: z.string().min(1).optional(),
 }).strict();
 
+/** Supported icon library identifiers for the `iconLibrary` config field. */
+export const iconLibraryConfigSchema = z.enum(iconLibraryIds);
+
 export const xeyyConfigSchema = z.object({
   $schema: z.string().url().optional(),
   components: componentsConfigSchema,
   theme: themeConfigSchema,
   aliases: aliasesConfigSchema.optional(),
-  iconLibrary: z.string().min(1).optional(),
+  // The field stays optional: the effective default (lucide) is applied by
+  // `resolveIconLibrary`, not by zod, so loadConfig output is unchanged for
+  // configs that omit it.
+  iconLibrary: iconLibraryConfigSchema.optional(),
   registries: registriesConfigSchema.optional(),
   registry: registryConfigSchema.optional(),
 }).strict();

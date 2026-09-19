@@ -5,6 +5,7 @@ export {
   aliasesConfigSchema,
   registriesConfigSchema,
   registryConfigSchema,
+  iconLibraryConfigSchema,
   type XeyyConfig,
   type ComponentsConfig,
   type ThemeConfig,
@@ -15,6 +16,7 @@ export {
 
 export {
   defaultConfig,
+  DEFAULT_ICON_LIBRARY,
   getConfigPath,
   configExists,
   loadConfig,
@@ -30,6 +32,7 @@ export {
   resolveRegistryThemeSource,
   resolveRegistryAlias,
   getRegistryUrl,
+  resolveIconLibrary,
   type ConfigValidationResult,
   type ConfigValidationIssue,
 } from './config.ts';

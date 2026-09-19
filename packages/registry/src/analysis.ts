@@ -1,6 +1,8 @@
 import { dirname, join, relative } from 'node:path';
 
-import type { RegistrySection } from './schemas.ts';
+import { isIconPackageName } from '@xeyy/icons';
+
+import type { RegistryIconUsage, RegistrySection } from './schemas.ts';
 import type { ScannedFile } from './discovery.ts';
 import { toPosix } from './paths.ts';
 
@@ -83,6 +85,78 @@ export function extractNpmDependencies(
   return [...names].sort();
 }
 
+// ── Icon library usage ───────────────────────────────────────────────────────
+
+const NAMED_IMPORT_RE = /^[ \t]*import\s+(?!type\b)([^'"]*?)\bfrom\s*['"]([^'"]+)['"]/gm;
+
+export interface NamedImport {
+  /** Module specifier, subpaths preserved. */
+  spec: string;
+  /** Exported names bound by the named clause (aliases resolve to the exported name). */
+  exportedNames: string[];
+  /** True when the statement also carries a default/namespace binding we cannot enumerate. */
+  opaque: boolean;
+}
+
+/**
+ * Named bindings of every non-type import statement. Regex-based like the rest
+ * of this module: registration only needs import detection, never rewriting.
+ */
+export function extractNamedImports(src: string): NamedImport[] {
+  const imports: NamedImport[] = [];
+  let m: RegExpExecArray | null;
+  while ((m = NAMED_IMPORT_RE.exec(src))) {
+    const clause = m[1]!;
+    const spec = m[2]!;
+    const braceStart = clause.indexOf('{');
+    const braceEnd = clause.lastIndexOf('}');
+    if (braceStart === -1 || braceEnd < braceStart) {
+      imports.push({ spec, exportedNames: [], opaque: true });
+      continue;
+    }
+    const defaultBinding = clause.slice(0, braceStart).replace(/[\s,]/g, '').length > 0;
+    const exportedNames: string[] = [];
+    for (const entry of clause.slice(braceStart + 1, braceEnd).split(',')) {
+      const binding = entry.trim();
+      if (binding.length === 0) continue;
+      // Inline type specifiers bind types, not icon components.
+      if (/^type\s/.test(binding)) continue;
+      const [exportedName] = binding.split(/\s+as\s+/);
+      const name = exportedName?.trim();
+      if (name && /^[A-Za-z_$][\w$]*$/.test(name)) exportedNames.push(name);
+    }
+    imports.push({ spec, exportedNames, opaque: defaultBinding });
+  }
+  return imports;
+}
+
+/**
+ * Icon libraries imported by a source text, derived purely from its imports.
+ * Independent of consumer configuration so registry output stays deterministic.
+ */
+export function analyzeIconUsage(src: string): RegistryIconUsage[] {
+  const usages: RegistryIconUsage[] = [];
+  for (const statement of extractNamedImports(src)) {
+    const library = isIconPackageName(statement.spec);
+    if (!library) continue;
+    usages.push({ library, names: statement.exportedNames });
+  }
+  return mergeIconUsage(usages);
+}
+
+/** Merge per-file icon usage into one deduplicated list, sorted by library then name. */
+export function mergeIconUsage(usages: RegistryIconUsage[]): RegistryIconUsage[] {
+  const byLibrary = new Map<RegistryIconUsage['library'], Set<string>>();
+  for (const usage of usages) {
+    const names = byLibrary.get(usage.library) ?? new Set<string>();
+    for (const name of usage.names) names.add(name);
+    byLibrary.set(usage.library, names);
+  }
+  return [...byLibrary.entries()]
+    .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+    .map(([library, names]) => ({ library, names: [...names].sort() }));
+}
+
 export interface KnownComponent {
   name: string;
   section: RegistrySection;
@@ -114,26 +188,29 @@ const EXTENSIONS = ['', '.ts', '.tsx', '.js', '.jsx', '/index.ts', '/index.tsx']
  * Detect likely registry dependencies (other Xeyy components) from relative /
  * alias imports that resolve into the canonical source tree. Only known
  * candidate components produce a match — nothing is guessed.
+ *
+ * `fileDir` is the component's own source directory; `file.relativePath` is
+ * relative to that directory (see `scanSourceDir`).
  */
 export function detectRegistryDependencies(
   files: ScannedFile[],
   options: {
+    fileDir: string;
     sourceDir: string;
     candidates: KnownComponent[];
     read: (f: ScannedFile) => string;
   },
 ): RegistryDependencyMatch[] {
-  const { sourceDir, candidates } = options;
+  const { fileDir, sourceDir, candidates } = options;
   const matches: RegistryDependencyMatch[] = [];
   const seen = new Set<string>();
 
   for (const file of files) {
     if (file.kind !== 'code') continue;
-    const fileAbs = join(sourceDir, file.relativePath);
-    const fromDir = dirname(fileAbs);
+    const fileAbs = join(fileDir, file.relativePath);
 
     for (const spec of extractModuleSpecifiers(options.read(file))) {
-      const target = resolveImportTarget(fromDir, spec, sourceDir);
+      const target = resolveImportTarget(fileAbs, spec, sourceDir);
       if (!target) continue;
 
       const normalizedTarget = toPosix(target);
@@ -303,6 +380,36 @@ export function extractTokenImports(src: string): string[] {
 export function relativeModuleSpec(fromFileDir: string, toFile: string): string {
   const rel = relative(fromFileDir, toFile);
   return toPosix(rel).replace(/\.ts$/, '');
+}
+
+const SIBLING_IMPORT_RE = /^\.\.\/([^/]+)\/(.+)$/;
+
+/**
+ * Rewrite a folder-style sibling component import (`../<name>/<file>`) to the
+ * flat spec used by the installed layout (`./<file>`), stripping the source
+ * extension. Sibling components whose names are not among `siblingNames` are
+ * left untouched.
+ */
+export function flattenSiblingImport(spec: string, siblingNames: readonly string[]): string {
+  const match = SIBLING_IMPORT_RE.exec(spec);
+  if (!match) return spec;
+  const [, name, rest] = match;
+  if (name === undefined || rest === undefined) return spec;
+  if (!siblingNames.includes(name)) return spec;
+  return `./${rest.replace(/\.(ts|tsx|js|jsx|mjs|cjs)$/, '')}`;
+}
+
+/**
+ * Rewrite every folder-style sibling import in a source text to the flat spec
+ * used by the installed component layout. Components are installed flat into
+ * the configured components directory, so `../button/button` becomes `./button`.
+ */
+export function flattenSiblingImports(content: string, siblingNames: readonly string[]): string {
+  if (siblingNames.length === 0) return content;
+  return content.replace(/(\bfrom\s+['"])([^'"]+)(['"])/g, (_match, prefix, spec: string, suffix) => {
+    const flat = flattenSiblingImport(spec, siblingNames);
+    return flat === spec ? _match : `${prefix}${flat}${suffix}`;
+  });
 }
 
 /**

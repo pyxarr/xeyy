@@ -7,7 +7,7 @@ import prompts from 'prompts';
 import { execa } from 'execa';
 import { detectProject } from '../project/detect.ts';
 import { resolveProjectRoot } from '../project/root.ts';
-import { configExists, createDefaultConfig, readConfig, ensureDir, resolveThemePath } from '../config.ts';
+import { configExists, createDefaultConfig, readConfig, ensureDir, resolveThemePath, resolveIconLibrary } from '../config.ts';
 import { loadConfiguredClient } from '../registry/client.ts';
 import { stageFiles } from '../registry/install.ts';
 import { resolveDistDirPath } from '../project/paths.ts';
@@ -70,7 +70,7 @@ export const init = new Command()
           console.log(`  Components: ${existing.components.path}`);
           console.log(`  Theme:      ${existing.theme.path}`);
           if (existing.aliases) console.log(`  Aliases:    ${existing.aliases.components}`);
-          if (existing.iconLibrary) console.log(`  Icons:      ${existing.iconLibrary}`);
+          console.log(`  Icons:      ${resolveIconLibrary(existing)}`);
           const existingRegistryName = existing.registries && Object.keys(existing.registries).length > 0
             ? Object.keys(existing.registries)[0]
             : 'local';
@@ -125,7 +125,7 @@ export const init = new Command()
       console.log(`  Components:      ${kleur.green(config.components.path)}`);
       console.log(`  Theme:           ${kleur.green(config.theme.path)}`);
       console.log(`  Aliases:         ${kleur.green(config.aliases?.components ?? 'none')}`);
-      console.log(`  Icon library:    ${kleur.green(config.iconLibrary ?? 'none')}`);
+      console.log(`  Icon library:    ${kleur.green(resolveIconLibrary(config))}${config.iconLibrary === undefined ? kleur.dim(' (default)') : ''}`);
       const registryKeys = config.registries ? Object.keys(config.registries) : [];
       const registryName = registryKeys.length > 0 ? registryKeys[0]! : 'local';
       console.log(`  Registry:        ${kleur.green(registryName)}`);

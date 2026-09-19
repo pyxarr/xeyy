@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import {
   loadConfig,
   resolveComponentPath,
+  resolveIconLibrary,
   resolveThemePath,
   resolveRegistryDir,
   resolveRegistrySource,
@@ -129,7 +130,11 @@ function main(): void {
 
   print('config schema', schemaIssues);
   print('path safety / existence', pathIssues);
-  console.log(`  ✓ aliases.components = ${result.config?.aliases?.components ?? "(default) '@/components'"}`);
+
+  if (result.valid && result.config) {
+    console.log(`  ✓ aliases.components = ${result.config.aliases?.components ?? "(default) '@/components'"}`);
+    console.log(`  ✓ iconLibrary = ${resolveIconLibrary(result.config)}${result.config.iconLibrary === undefined ? ' (resolved default)' : ''}`);
+  }
 
   if (!existsSync(resolve(projectDir, 'xeyy.config.json'))) {
     console.error('\nConfig missing — xeyy.config.json does not exist.');

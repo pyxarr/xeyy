@@ -22,6 +22,7 @@
     "vitest": "^5.0.0"
   },
   "dependencies": {
+    "@xeyy/icons": "workspace:*",
     "zod": "^4.5.4"
   }
 }

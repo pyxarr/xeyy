@@ -49,6 +49,7 @@ into the distributable payload.
 | `xeyy registry validate` | Full registry validation (schema, categories, paths, source files, duplicates, composition). For CI. |
 | `xeyy build` | Compose + validate the source registry and emit `dist/registry` with embedded content. |
 | `xeyy add <items...>` | Install official/custom registry components into the user project. |
+| `xeyy migrate icons --from <library> --to <library> [--yes]` | Rewrite icon imports in your project from one icon library to another. |
 
 All `registry` subcommands and `build` accept `--reg`/`--reg --registry`, `--source`, `--output` overrides where relevant, plus `--dry-run`, `--yes`, and `--json` for scripting.
 
@@ -242,6 +243,68 @@ build independently and hosts the resulting output at `xeyy.dev/r/`.
 
 The `registry` block configures authoring (`path`, `source`, optional
 `themes`, `dist`); the other fields control consumer installation.
+
+## Icon libraries
+
+Components use **direct icon imports** from a plain icon package — the source
+you install is yours to edit. There is no Xeyy icon runtime, wrapper component,
+or provider.
+
+`xeyy.config.json` accepts an optional `iconLibrary` field:
+
+```jsonc
+{
+  "iconLibrary": "lucide" // default when omitted
+}
+```
+
+Supported libraries:
+
+| Library | Package | Migration |
+| --- | --- | --- |
+| `lucide` (default) | `lucide-react` | verified mappings |
+| `tabler` | `@tabler/icons-react` | verified mappings |
+| `phosphor` | `@phosphor-icons/react` | verified mappings |
+| `remixicon` | `@remixicon/react` | verified mappings |
+| `hugeicons` | `@hugeicons/react` | not migratable (data-component API) |
+
+### How `xeyy add` handles icons
+
+Registry metadata records which icon library each component imports (derived
+automatically from source at registration time; never maintained by hand).
+`xeyy add`:
+
+- installs the icon package(s) the component needs, alongside its other npm
+  dependencies;
+- if the component uses a different library than your `iconLibrary`, rewrites
+  its imports to your library using verified name mappings;
+- leaves icons without a verified equivalent untouched on their original
+  package and reports them clearly, so nothing is silently substituted;
+- type-only imports, re-exports, dynamic `import()` and namespace/default
+  imports are never rewritten and always reported.
+
+The hosted registry always serves the same canonical source regardless of your
+`iconLibrary`; adaptation happens locally, at install time.
+
+### `xeyy migrate icons`
+
+Switch an existing project between icon libraries:
+
+```bash
+xeyy migrate icons --from lucide --to tabler --yes
+```
+
+- `--from` defaults to your configured `iconLibrary`; `--to` is required.
+- Scans `.ts/.tsx` under your configured `components.path`, rewrites named
+  imports (aliases, multiline lists, multiple icons) via AST-safe edits that
+  preserve formatting, comments and JSX usage.
+- Installs the target icon package and updates `iconLibrary` in
+  `xeyy.config.json`.
+- Unmapped icons stay on their original package (both packages remain
+  installed) and are listed in the output.
+- If any file cannot be parsed or rewritten safely, the command aborts before
+  writing anything.
+
 
 ## Development
 

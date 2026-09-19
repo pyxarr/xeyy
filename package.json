@@ -7,7 +7,7 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
-    "test": "turbo run test --filter=@xeyy/config --filter=@xeyy/registry --filter=xeyyui",
+    "test": "turbo run test --filter=@xeyy/icons --filter=@xeyy/config --filter=@xeyy/registry --filter=xeyyui",
     "validate:config": "node packages/config/src/validate-config.ts",
     "validate:registry": "node packages/registry/src/validate-registry.ts",
     "build:registry": "node packages/registry/src/build-registry.ts && node packages/config/src/build-dist-schema.ts",

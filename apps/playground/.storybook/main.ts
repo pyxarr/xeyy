@@ -34,6 +34,10 @@ const config: StorybookConfig = {
 
   viteFinal: async (config) => {
     config.plugins = config.plugins ?? [];
+    config.resolve = {
+      ...config.resolve,
+      dedupe: [...(config.resolve?.dedupe ?? []), 'react', 'react-dom'],
+    };
 
     config.plugins.push(
       stylex.vite({

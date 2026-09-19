@@ -1,5 +1,5 @@
 import { dirname, isAbsolute, relative, resolve } from 'node:path';
-import { rewriteTokenImports, extractTokenImports } from '@xeyy/registry';
+import { rewriteTokenImports, extractTokenImports, flattenSiblingImports } from '@xeyy/registry';
 import type { RegistryItem } from '@xeyy/registry';
 import type { XeyyConfig } from '@xeyy/config';
 import { resolveComponentPath, resolveThemePath } from '../config.ts';
@@ -62,6 +62,9 @@ export function stageFiles(
   const staged: StagedFile[] = [];
   const themeTarget = themeTargetFile(installItems, config, projectDir);
   const componentsDir = resolveComponentPath(config, projectDir);
+  const siblingNames = installItems
+    .filter((item) => item.type !== 'registry:theme')
+    .map((item) => item.name);
 
   for (const item of installItems) {
     for (const file of item.files) {
@@ -80,6 +83,10 @@ export function stageFiles(
       if (item.type !== 'registry:theme') {
         const fromDir = placement.baseDir === componentsDir ? componentsDir : dirname(placement.path);
         content = rewriteTokenImports(content, fromDir, themeTarget);
+        // Components install flat into the components directory; folder-style
+        // sibling imports (`../button/button`) must point at the flat file
+        // (`./button`) or the installed source will not resolve.
+        content = flattenSiblingImports(content, siblingNames);
       }
 
       staged.push({

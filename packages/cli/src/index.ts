@@ -10,6 +10,7 @@ import { info } from './commands/info.ts';
 import { docs } from './commands/docs.ts';
 import { doctor } from './commands/doctor.ts';
 import { registry } from './commands/registry.ts';
+import { migrate } from './commands/migrate.ts';
 
 import packageJson from '../package.json' with { type: 'json' };
 
@@ -27,5 +28,6 @@ program.addCommand(info);
 program.addCommand(docs);
 program.addCommand(doctor);
 program.addCommand(registry);
+program.addCommand(migrate);
 
 program.parse();

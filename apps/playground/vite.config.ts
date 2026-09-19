@@ -21,6 +21,9 @@ export default defineConfig({
     }),
     react(),
   ],
+  resolve: {
+    dedupe: ['react', 'react-dom'],
+  },
   test: {
     projects: [{
       extends: true,

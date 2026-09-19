@@ -4,17 +4,18 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/ui/button/button.tsx",
-    "./ui/button": "./src/ui/button/button.tsx"
+    ".": "./src/index.ts"
   },
   "dependencies": {
     "@base-ui/react": "latest",
     "@stylexjs/stylex": "^0.19.0",
-    "@xeyy/tokens": "workspace:*"
+    "@xeyy/tokens": "workspace:*",
+    "lucide-react": "^1.39.0"
   },
   "devDependencies": {
     "@xeyy/typescript-config": "workspace:*",
-    "@types/react": "latest",
-    "react": "latest"
+    "@types/react": "19.2.18",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
   }
 }

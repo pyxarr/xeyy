@@ -142,19 +142,21 @@ const variants = stylex.create({
   },
 
   destructive: {
-    backgroundColor: `color-mix(in oklab, ${semantic.destructive} 10%, transparent)`,
-    color: semantic.destructive,
+    backgroundColor: semantic.destructive,
+    color: semantic.primaryForeground,
 
     ":hover": {
-      backgroundColor: `color-mix(in oklab, ${semantic.destructive} 20%, transparent)`,
+      backgroundColor: `color-mix(in oklab, ${semantic.destructive} 90%, transparent)`,
     },
 
     ":focus-visible": {
-      boxShadow: `0 0 0 3px color-mix(in oklab, ${semantic.destructive} 20%, transparent)`,
+      boxShadow: `0 0 0 3px color-mix(in oklab, ${semantic.destructive} 40%, transparent)`,
     },
 
     "@media (prefers-color-scheme: dark)": {
-      backgroundColor: `color-mix(in oklab, ${semantic.destructive} 20%, transparent)`,
+      ":hover": {
+        backgroundColor: `color-mix(in oklab, ${semantic.destructive} 80%, transparent)`,
+      },
 
       ":focus-visible": {
         boxShadow: `0 0 0 3px color-mix(in oklab, ${semantic.destructive} 40%, transparent)`,

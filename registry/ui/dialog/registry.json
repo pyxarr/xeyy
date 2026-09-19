@@ -1,0 +1,58 @@
+{
+  "$schema": "https://xeyy-registry.vercel.app/schema/registry-item.json",
+  "name": "dialog",
+  "type": "registry:ui",
+  "version": "1.0.0",
+  "title": "Dialog",
+  "description": "A themeable Dialog component built on Base UI and StyleX.",
+  "categories": [
+    "overlay",
+    "interactive",
+    "accessible",
+    "client-only"
+  ],
+  "source": "../../../packages/components/src/ui/dialog",
+  "files": [
+    {
+      "path": "dialog.example.tsx",
+      "type": "example"
+    },
+    {
+      "path": "dialog.tsx",
+      "type": "registry:ui"
+    }
+  ],
+  "dependencies": [
+    "@base-ui/react",
+    "@stylexjs/stylex",
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "button"
+  ],
+  "icons": [
+    {
+      "library": "lucide",
+      "names": [
+        "X"
+      ]
+    }
+  ],
+  "fingerprint": {
+    "dialog.tsx": "760f9d448f01d21cba6984e4ec30879107eb2f8e0227fc6578e266e272bb50c9"
+  },
+  "stylex": {
+    "features": [
+      "create"
+    ],
+    "compiler": true,
+    "conditions": [
+      "media"
+    ]
+  },
+  "accessibility": {
+    "keyboard": false,
+    "focusManagement": false,
+    "aria": true
+  }
+}

@@ -225,6 +225,13 @@ function validateDistItem(
       message: `index fileCount ${entry.fileCount} does not match payload file count ${item.files.length}`,
     });
   }
+  // Icon metadata is derived at registration time; index and payload must agree.
+  if (JSON.stringify(item.icons ?? null) !== JSON.stringify(entry.icons ?? null)) {
+    issues.push({
+      path: `${payloadPath}.icons`,
+      message: 'payload icon metadata does not match the index entry',
+    });
+  }
 
   const seenFilePaths = new Set<string>();
   for (const [fileIndex, file] of item.files.entries()) {

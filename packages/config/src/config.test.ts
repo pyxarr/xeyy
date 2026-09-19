@@ -1,11 +1,16 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { mkdirSync, writeFileSync, rmSync, existsSync } from 'node:fs';
+import { mkdirSync, writeFileSync, rmSync, existsSync, readFileSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { fileURLToPath } from 'node:url';
+
+import { iconLibraryIds } from '@xeyy/icons';
 
 import {
   xeyyConfigSchema,
+  iconLibraryConfigSchema,
   defaultConfig,
+  DEFAULT_ICON_LIBRARY,
   getConfigPath,
   configExists,
   loadConfig,
@@ -17,6 +22,7 @@ import {
   resolveThemePath,
   resolveRegistryAlias,
   getRegistryUrl,
+  resolveIconLibrary,
 } from './index.ts';
 
 const TEST_DIR = join(tmpdir(), 'xeyy-config-test');
@@ -184,6 +190,42 @@ describe('xeyyConfigSchema', () => {
   });
 });
 
+describe('iconLibraryConfigSchema', () => {
+  const BASE = {
+    components: { path: 'src/components/ui' },
+    theme: { path: 'src/styles/theme.stylex.ts' },
+  };
+
+  it('accepts every supported icon library id', () => {
+    for (const id of iconLibraryIds) {
+      const result = xeyyConfigSchema.safeParse({ ...BASE, iconLibrary: id });
+      expect(result.success).toBe(true);
+    }
+  });
+
+  it('keeps iconLibrary optional', () => {
+    const result = xeyyConfigSchema.safeParse(BASE);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.iconLibrary).toBeUndefined();
+    }
+  });
+
+  it('rejects invalid iconLibrary values with an issue path of iconLibrary', () => {
+    for (const invalid of ['font-awesome', '', 42]) {
+      const result = xeyyConfigSchema.safeParse({ ...BASE, iconLibrary: invalid });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.issues.some((issue) => issue.path[0] === 'iconLibrary')).toBe(true);
+      }
+    }
+  });
+
+  it('exposes exactly the supported icon library ids', () => {
+    expect(iconLibraryConfigSchema.options).toEqual([...iconLibraryIds]);
+  });
+});
+
 describe('defaultConfig', () => {
   it('is valid against the schema', () => {
     const result = xeyyConfigSchema.safeParse(defaultConfig);
@@ -197,6 +239,24 @@ describe('defaultConfig', () => {
     expect(defaultConfig.iconLibrary).toBe('lucide');
     expect(defaultConfig.registries?.['@xeyy']).toBe('https://xeyy-registry.vercel.app/registry');
     expect(defaultConfig.$schema).toBe('https://xeyy-registry.vercel.app/schema/config.schema.json');
+  });
+});
+
+describe('resolveIconLibrary', () => {
+  it('defaults to lucide for null and undefined configs', () => {
+    expect(resolveIconLibrary(null)).toBe('lucide');
+    expect(resolveIconLibrary(undefined)).toBe('lucide');
+    expect(DEFAULT_ICON_LIBRARY).toBe('lucide');
+  });
+
+  it('defaults to lucide when the field is omitted', () => {
+    expect(resolveIconLibrary({})).toBe('lucide');
+    expect(resolveIconLibrary({ iconLibrary: undefined })).toBe('lucide');
+  });
+
+  it('returns the configured icon library', () => {
+    expect(resolveIconLibrary({ iconLibrary: 'lucide' })).toBe('lucide');
+    expect(resolveIconLibrary({ iconLibrary: 'tabler' })).toBe('tabler');
   });
 });
 
@@ -277,6 +337,18 @@ describe('config file operations', () => {
       const result = loadConfig(testDir);
       expect(result.valid).toBe(true);
       expect(result.config).toEqual(fullConfig);
+    });
+
+    it('preserves a non-default iconLibrary value', () => {
+      const config = {
+        components: { path: 'src/components/ui' },
+        theme: { path: 'src/styles/theme.stylex.ts' },
+        iconLibrary: 'tabler',
+      };
+      writeFileSync(getConfigPath(testDir), JSON.stringify(config));
+      const result = readConfig(testDir);
+      expect(result?.iconLibrary).toBe('tabler');
+      expect(resolveIconLibrary(result)).toBe('tabler');
     });
   });
 
@@ -393,5 +465,14 @@ describe('config file operations', () => {
       const config = { ...defaultConfig, registries: { '@xeyy': 'https://xeyy-registry.vercel.app/registry' } };
       expect(getRegistryUrl(config, '@unknown', 'button')).toBeUndefined();
     });
+  });
+});
+
+describe('generated config JSON Schema', () => {
+  it('declares iconLibrary as an enum of the supported icon library ids', () => {
+    const schemaPath = resolve(fileURLToPath(import.meta.url), '../schema/config.schema.json');
+    const doc: unknown = JSON.parse(readFileSync(schemaPath, 'utf8'));
+    const iconLibrary = (doc as { properties?: Record<string, { enum?: unknown }> }).properties?.iconLibrary;
+    expect(iconLibrary?.enum).toEqual([...iconLibraryIds]);
   });
 });

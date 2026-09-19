@@ -1,0 +1,60 @@
+{
+  "$schema": "https://xeyy-registry.vercel.app/schema/registry-item.json",
+  "name": "select",
+  "type": "registry:ui",
+  "version": "1.0.0",
+  "title": "Select",
+  "description": "A themeable Select component built on Base UI and StyleX.",
+  "categories": [
+    "form",
+    "interactive",
+    "accessible",
+    "client-only"
+  ],
+  "source": "../../../packages/components/src/ui/select",
+  "files": [
+    {
+      "path": "select.example.tsx",
+      "type": "example"
+    },
+    {
+      "path": "select.tsx",
+      "type": "registry:ui"
+    }
+  ],
+  "dependencies": [
+    "@base-ui/react",
+    "@stylexjs/stylex",
+    "lucide-react"
+  ],
+  "icons": [
+    {
+      "library": "lucide",
+      "names": [
+        "Check",
+        "ChevronDown",
+        "ChevronUp"
+      ]
+    }
+  ],
+  "fingerprint": {
+    "select.tsx": "36c823db0efd0a2ac58ca3ab447d280a27aa9f857ad211c3d87b4ea29a54c1a7"
+  },
+  "stylex": {
+    "features": [
+      "create"
+    ],
+    "compiler": true,
+    "conditions": [
+      "disabled",
+      "focus-visible",
+      "hover",
+      "media"
+    ]
+  },
+  "accessibility": {
+    "keyboard": false,
+    "focusManagement": false,
+    "aria": true
+  }
+}

@@ -3,6 +3,7 @@ export type {
   LicenseMetadata,
   RegistryFile,
   RegistryFileType,
+  RegistryIconUsage,
   RegistryItem,
   RegistryItemType,
   RegistryRoot,
@@ -13,6 +14,8 @@ export type {
 
 export {
   accessibilityMetadataSchema,
+  iconLibrarySchema,
+  iconUsageSchema,
   licenseMetadataSchema,
   registryFileSchema,
   registryFileTypeSchema,
